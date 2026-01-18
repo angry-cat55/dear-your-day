@@ -2,6 +2,7 @@ package com.example.dearyourdayserver.service;
 
 import com.example.dearyourdayserver.dto.user.LoginRequest;
 import com.example.dearyourdayserver.dto.user.LoginResponse;
+import com.example.dearyourdayserver.dto.user.MyInfoResponse;
 import com.example.dearyourdayserver.dto.user.SignupRequest;
 import com.example.dearyourdayserver.entity.User;
 import com.example.dearyourdayserver.repository.UserRepository;
@@ -18,7 +19,7 @@ public class UserService {
 
     // 회원가입 기능
     @Transactional
-    public Long signup(SignupRequest request) {
+    public Long signup(SignupRequest request) { // 회원가입 시 보낸 정보가 담긴 SignupRequest DTO
         // 1. 아이디 중복 검사
         if (userRepository.findByLoginId(request.getLoginId()).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
@@ -52,5 +53,15 @@ public class UserService {
 
         // 3. 일치하면 결과 DTO 반환
         return LoginResponse.from(user);
+    }
+
+    // 정보 조회 기능
+    public MyInfoResponse getInfoById(Long userId) {
+        // 1. 유저 ID로 정보 반환
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("정보를 조회할 수 없습니다."));
+
+        // 2. DTO 반환
+        return MyInfoResponse.from(user);
     }
 }
