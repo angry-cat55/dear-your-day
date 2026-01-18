@@ -1,9 +1,6 @@
 package com.example.dearyourdayserver.controller;
 
-import com.example.dearyourdayserver.dto.user.LoginRequest;
-import com.example.dearyourdayserver.dto.user.LoginResponse;
-import com.example.dearyourdayserver.dto.user.MyInfoResponse;
-import com.example.dearyourdayserver.dto.user.SignupRequest;
+import com.example.dearyourdayserver.dto.user.*;
 import com.example.dearyourdayserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,7 +36,20 @@ public class UserController {
     @GetMapping("/{userId}") // url로 유저 ID 전달
     public ResponseEntity<MyInfoResponse> getInfoById(@PathVariable Long userId) {
         MyInfoResponse response = userService.getInfoById(userId); // 전달받은 유저 ID로 유저 정보 반환
+
         // 성공하면 "200 OK" 상태코드와 함께 비밀번호를 제외한 모든 유저 정보 DTO 전달
         return ResponseEntity.ok(response);
+    }
+
+    // 닉네임 수정 API
+    @PatchMapping("/{userId}/nickname") // url로 유저 ID 전달
+    public ResponseEntity<String> updateNickname(
+            @PathVariable Long userId, // 유저 ID
+            @RequestBody NicknameUpdateRequest request) { // 화면에서 전달된 새 닉네임
+        String newNickname = request.getNickname();
+        userService.updateNickname(userId, newNickname); // 서비스에서 새 닉네임으로 변경
+
+        // 성공하면 "200 OK" 상태코드와 함께 새 닉네임 String 전달
+        return ResponseEntity.ok(newNickname);
     }
 }

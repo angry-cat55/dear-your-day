@@ -1,9 +1,6 @@
 package com.example.dearyourdayserver.service;
 
-import com.example.dearyourdayserver.dto.user.LoginRequest;
-import com.example.dearyourdayserver.dto.user.LoginResponse;
-import com.example.dearyourdayserver.dto.user.MyInfoResponse;
-import com.example.dearyourdayserver.dto.user.SignupRequest;
+import com.example.dearyourdayserver.dto.user.*;
 import com.example.dearyourdayserver.entity.User;
 import com.example.dearyourdayserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,5 +60,13 @@ public class UserService {
 
         // 2. DTO 반환
         return MyInfoResponse.from(user);
+    }
+
+    @Transactional // 필드 변경 시 자동으로 UPDATE 쿼리 전송
+    // 닉네임 수정 기능
+    public void updateNickname(Long userId, String newNickname) {
+        User user = userRepository.findById(userId).orElseThrow(() -> // 유저 Entity 반환
+                new IllegalArgumentException("정보를 조회할 수 없습니다."));
+        user.updateNickname(newNickname); // user Entity의 updateNickname 함수에 새 닉네임 전달
     }
 }

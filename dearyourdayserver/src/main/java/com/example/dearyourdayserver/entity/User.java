@@ -40,4 +40,8 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.createdAt = LocalDateTime.now();
     }
+
+    public void updateNickname(String newNickname) {
+        this.nickname = newNickname;
+    }
 }
