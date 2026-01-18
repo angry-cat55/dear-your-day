@@ -1,5 +1,7 @@
 package com.example.dearyourdayserver.controller;
 
+import com.example.dearyourdayserver.dto.user.LoginRequest;
+import com.example.dearyourdayserver.dto.user.LoginResponse;
 import com.example.dearyourdayserver.dto.user.SignupRequest;
 import com.example.dearyourdayserver.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +23,12 @@ public class UserController {
 
         // 성공하면 "201 Created" 상태코드와 함께 가입된 ID를 줌
         return ResponseEntity.status(HttpStatus.CREATED).body(userId);
+    }
+
+    // 로그인 API
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        LoginResponse response = userService.login(request);
+        return ResponseEntity.ok(response);
     }
 }

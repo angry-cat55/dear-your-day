@@ -1,5 +1,7 @@
 package com.example.dearyourdayserver.service;
 
+import com.example.dearyourdayserver.dto.user.LoginRequest;
+import com.example.dearyourdayserver.dto.user.LoginResponse;
 import com.example.dearyourdayserver.dto.user.SignupRequest;
 import com.example.dearyourdayserver.entity.User;
 import com.example.dearyourdayserver.repository.UserRepository;
@@ -8,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor // Repository를 자동으로 연결해줌 (의존성 주입)
-@Transactional(readOnly = true) // 기본적으로는 읽기만 함 (안전)
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -35,5 +37,20 @@ public class UserService {
 
         // 4. 가입된 유저 ID 반환
         return savedUser.getUserId();
+    }
+
+    // 로그인 기능
+    public LoginResponse login(LoginRequest request) {
+        // 1. 아이디로 유저 찾기 (없으면 에러 처리)
+        User user = userRepository.findByLoginId(request.getLoginId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
+
+        // 2. 비밀번호 확인
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+        }
+
+        // 3. 일치하면 결과 DTO 반환
+        return LoginResponse.from(user);
     }
 }

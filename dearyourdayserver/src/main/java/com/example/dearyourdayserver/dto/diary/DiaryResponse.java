@@ -10,11 +10,11 @@ import java.time.LocalDate;
 @Builder
 public class DiaryResponse {
 
-    private Long diaryId;
-    private String content;
-    private LocalDate writtenDate;
-    private String moodCode;
-    private String aiComment;
+    private Long diaryId; // 조회한 일기 id
+    private String content; // 조회한 일기 내용
+    private LocalDate writtenDate; // 조회한 일기의 일자
+    private String moodCode; // 조회한 일기에 저장된 기분 코드
+    private String aiComment; // 조회한 일기에 해당되는 ai 공감 코멘트
 
     // Entity -> DTO 변환
     public static DiaryResponse from(Diary diary) {
