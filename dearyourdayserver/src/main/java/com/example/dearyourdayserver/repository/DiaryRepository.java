@@ -1,5 +1,6 @@
 package com.example.dearyourdayserver.repository;
 
+import com.example.dearyourdayserver.dto.diary.DiaryMonthResponse;
 import com.example.dearyourdayserver.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 

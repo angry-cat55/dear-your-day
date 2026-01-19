@@ -53,6 +53,7 @@ public class UserService {
     }
 
     // 정보 조회 기능
+    @Transactional(readOnly = true)
     public MyInfoResponse getInfoById(Long userId) {
         // 1. 유저 ID로 정보 반환
         User user = userRepository.findById(userId)
@@ -65,8 +66,11 @@ public class UserService {
     @Transactional // 필드 변경 시 자동으로 UPDATE 쿼리 전송
     // 닉네임 수정 기능
     public void updateNickname(Long userId, String newNickname) {
-        User user = userRepository.findById(userId).orElseThrow(() -> // 유저 Entity 반환
+        // 1. 유저 Entity 반환
+        User user = userRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException("정보를 조회할 수 없습니다."));
-        user.updateNickname(newNickname); // user Entity의 updateNickname 함수에 새 닉네임 전달
+
+        // 2. user Entity의 updateNickname 함수에 새 닉네임 전달
+        user.updateNickname(newNickname);
     }
 }

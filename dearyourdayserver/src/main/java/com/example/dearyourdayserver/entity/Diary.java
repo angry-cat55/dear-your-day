@@ -60,6 +60,8 @@ public class Diary {
         this.content = content;
         this.moodCode = moodCode;
         this.updatedAt = LocalDateTime.now();
+        this.aiComment = null;
+        this.aiGeneratedAt = null;
     }
 
     // AI 코멘트 달릴 때 쓸 메소드
