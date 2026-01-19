@@ -25,17 +25,24 @@ public class AiSummary {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String summaryContent;
 
-    @Column(nullable = false)
-    private LocalDate analyzedUntilDate;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String analyzedDiaryIds;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Builder
-    public AiSummary(User user, String summaryContent, LocalDate analyzedUntilDate) {
+    public AiSummary(User user, String summaryContent, String analyzedDiaryIds) {
         this.user = user;
         this.summaryContent = summaryContent;
-        this.analyzedUntilDate = analyzedUntilDate;
-        this.createdAt = LocalDateTime.now(); // 객체 생성 시 현재 시간 자동 저장
+        this.analyzedDiaryIds = analyzedDiaryIds;
+        this.updatedAt = LocalDateTime.now(); // 객체 생성 시 현재 시간 자동 저장
+    }
+
+    // 내용 업데이트용 메소드
+    public void updateSummary(String newContent, String newIds) {
+        this.summaryContent = newContent;
+        this.analyzedDiaryIds = newIds;
+        this.updatedAt = LocalDateTime.now();
     }
 }

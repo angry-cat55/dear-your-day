@@ -14,4 +14,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     Optional<Diary> findByUserAndWrittenDate(User user, LocalDate writtenDate);
     // 특정 유저의 특정 기간 일기 모두 가져오는 메소드
     List<Diary> findAllByUserAndWrittenDateBetween(User user, LocalDate startDate, LocalDate endDate);
+    // 특정 유저의 기간 동안의 최대 30개의 일기를 가져오는 메소드
+    List<Diary> findTop30ByUserAndWrittenDateAfterOrderByWrittenDateDesc(User user, LocalDate date);
 }
