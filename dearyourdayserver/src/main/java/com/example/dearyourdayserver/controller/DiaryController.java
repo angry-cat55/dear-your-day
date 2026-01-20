@@ -3,6 +3,7 @@ package com.example.dearyourdayserver.controller;
 import com.example.dearyourdayserver.dto.diary.DiaryMonthResponse;
 import com.example.dearyourdayserver.dto.diary.DiaryResponse;
 import com.example.dearyourdayserver.dto.diary.DiaryWriteRequest;
+import com.example.dearyourdayserver.service.AiCommentService;
 import com.example.dearyourdayserver.service.DiaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,15 @@ import java.util.List;
 public class DiaryController {
 
     private final DiaryService diaryService;
+    private final AiCommentService aiCommentService;
 
     // 일기 작성 API
     @PostMapping
     public ResponseEntity<DiaryResponse> writeDiary(@RequestBody DiaryWriteRequest request) { // 일기 데이터를 DTO로 매칭시켜 저장
         DiaryResponse response = diaryService.writeDiary(request); // 서비스 호출해서 일기 저장 후 일기 정보 반환 
+
+        // 일기 저장 후, 비공기 AI 코멘트 생성 요청
+        aiCommentService.generateAndSaveComment(response.getDiaryId());
 
         // 성공하면 "201 Created" 상태코드와 함께 일기 정보 DTO 전달
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

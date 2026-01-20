@@ -24,6 +24,7 @@ public class DiaryService {
 
     private final DiaryRepository diaryRepository;
     private final UserRepository userRepository;
+    private final AiCommentService aiCommentService;
 
     // 일기 작성 기능
     @Transactional

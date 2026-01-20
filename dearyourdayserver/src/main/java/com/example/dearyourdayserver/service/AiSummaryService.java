@@ -24,6 +24,7 @@ public class AiSummaryService {
     private final AiSummaryRepository aiSummaryRepository;
     private final DiaryRepository diaryRepository;
     private final UserRepository userRepository;
+    private final GeminiService geminiService;
 
     // 종합 공감 조회 (생성 or 조회)
     @Transactional
@@ -88,20 +89,25 @@ public class AiSummaryService {
     // (내부 메소드) AI API 호출 및 저장
     private AiSummaryResponse createNewSummary(User user, List<Diary> diaries, String diariesId) {
 
-        // TODO: 외부 API 사용해서 텍스트 생성
-        String aiSummaryContent = "고생 많았어요.";
+        // 1. 일기 내용을 AI가 이해할 수 있게 날짜 + 내용 포맷팅
+        List<String> diaryContents = diaries.stream()
+                .map(d -> String.format("[%s] %s", d.getWrittenDate(), d.getContent()))
+                .toList();
 
-        // 1. 기존에 저장된 종합 공감 확인
+        // 2. GeminiService 호출해서 종합 공감 코멘트 반환
+        String aiSummaryContent = geminiService.getSummary(diaryContents);
+
+        // 3. 기존에 저장된 종합 공감 확인
         Optional<AiSummary> existingSummary = aiSummaryRepository.findByUser(user);
 
         AiSummary aiSummary;
 
-        // 2. 이미 유저의 종합 공감 데이터가 존재할 경우
+        // 4. 이미 유저의 종합 공감 데이터가 존재할 경우
         if (existingSummary.isPresent()) {
             aiSummary = existingSummary.get();
             aiSummary.updateSummary(aiSummaryContent, diariesId);
         }
-        // 3. 없으면 새로 생성
+        // 5. 없으면 새로 생성
         else {
             aiSummary = AiSummary.builder()
                     .user(user)
@@ -110,10 +116,10 @@ public class AiSummaryService {
                     .build();
         }
 
-        // 4. 생성된 AI 코멘트 DB에 저장 후 반환
+        // 6. 생성된 AI 코멘트 DB에 저장 후 반환
         AiSummary savedSummary = aiSummaryRepository.save(aiSummary);
 
-        // 5. 결과 반환
+        // 7. 결과 반환
         return AiSummaryResponse.from(savedSummary);
     }
 }
