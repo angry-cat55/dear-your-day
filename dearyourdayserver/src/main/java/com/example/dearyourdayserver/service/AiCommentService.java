@@ -26,10 +26,13 @@ public class AiCommentService {
             Diary diary = diaryRepository.findById(diaryId)
                     .orElseThrow(() -> new IllegalArgumentException("일기를 찾을 수 없습니다."));
 
-            // 2. Gemini API 호출
-            String comment = geminiService.getCoachingComment(diary.getContent());
+            // 2. 사용자 닉네임 저장
+            String userNickname = diary.getUser().getNickname();
 
-            // 3. 결과 저장
+            // 3. Gemini API 호출
+            String comment = geminiService.getCoachingComment(diary.getContent(), userNickname);
+
+            // 4. 결과 업데이트 해서 저장
             diary.updateAiComment(comment);
 
             log.info("AI 코멘트 저장 완료: {}", comment);

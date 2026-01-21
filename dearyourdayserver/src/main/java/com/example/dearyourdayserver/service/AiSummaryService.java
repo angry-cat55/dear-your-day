@@ -95,7 +95,8 @@ public class AiSummaryService {
                 .toList();
 
         // 2. GeminiService 호출해서 종합 공감 코멘트 반환
-        String aiSummaryContent = geminiService.getSummary(diaryContents);
+        String userNickname = user.getNickname();
+        String aiSummaryContent = geminiService.getSummary(diaryContents, userNickname);
 
         // 3. 기존에 저장된 종합 공감 확인
         Optional<AiSummary> existingSummary = aiSummaryRepository.findByUser(user);

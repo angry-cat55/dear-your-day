@@ -3,6 +3,7 @@ package com.example.dearyourdayserver.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestClient;
 
@@ -20,7 +21,11 @@ public class AppConfig {
     // RestClient라는 도구를 스프링 빈(Bean)으로 등록하는 과정
     @Bean
     public RestClient geminiRestClient() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(60000); // 연결 타임아웃 60초
+        factory.setReadTimeout(60000); // 읽기 타임아웃 60초 (답변 기다리는 시간)
         return RestClient.builder()
+                .requestFactory(factory)
                 .baseUrl(geminiUrl) // https://generativelanguage.googleapis.com 까지만 설정
                 .defaultHeader("x-goog-api-key", geminiApiKey)
                 .defaultHeader("Content-Type", "application/json")

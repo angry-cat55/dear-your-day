@@ -42,8 +42,11 @@ public class DiaryController {
         // 일기 업데이트 후 새 일기 데이터 반환
         DiaryResponse response = diaryService.updateDiary(diaryId, request);
 
-        // 성공하면 "201 Created" 상태코드와 함께 새 일기 정보 DTO 전달
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        // 일기 저장 후, 비공기 AI 코멘트 생성 요청
+        aiCommentService.generateAndSaveComment(response.getDiaryId());
+
+        // 성공하면 "200 OK" 상태코드와 함께 새 일기 정보 DTO 전달
+        return ResponseEntity.ok(response);
     }
 
     // 일기 삭제 API
