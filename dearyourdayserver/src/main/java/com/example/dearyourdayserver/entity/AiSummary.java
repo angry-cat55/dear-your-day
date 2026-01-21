@@ -28,7 +28,7 @@ public class AiSummary {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String analyzedDiaryIds;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = true)
     private LocalDateTime updatedAt;
 
     @Builder

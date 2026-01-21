@@ -8,6 +8,7 @@ import com.example.dearyourdayserver.repository.AiSummaryRepository;
 import com.example.dearyourdayserver.repository.DiaryRepository;
 import com.example.dearyourdayserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class AiSummaryService {
     private final AiSummaryRepository aiSummaryRepository;
@@ -70,7 +72,7 @@ public class AiSummaryService {
                         .max(LocalDateTime::compareTo)
                         .orElse(LocalDateTime.MIN);
 
-                // 9. AI 종합 공감 코멘트 생서 이후 수정된 일기가 있을 경우 재생성
+                // 9. AI 종합 공감 코멘트 생성 이후 수정된 일기가 있을 경우 재생성
                 if (lastUpdated.isAfter(summary.getUpdatedAt())) {
                     needRegenerate = true;
                 }
@@ -82,6 +84,7 @@ public class AiSummaryService {
             return createNewSummary(user, currentDiaries, currentDiariesId);
         }
         else {
+            log.info("기존 종합 공감 코멘트 불러오기");
             return AiSummaryResponse.from(aiSummary.get());
         }
     }
