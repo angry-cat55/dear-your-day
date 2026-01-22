@@ -13,6 +13,10 @@ build/
 .DS_Store
 Thumbs.db
 
+# Spring config
+application.properties
+application-*.properties
+
 # Android (나중 대비)
 local.properties
 **/build/
