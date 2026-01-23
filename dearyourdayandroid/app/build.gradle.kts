@@ -57,4 +57,14 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // 1. 내비게이션 (화면 이동)
+    implementation("androidx.navigation:navigation-compose:2.8.5")
+
+    // 2. Retrofit (서버 통신) & Gson (JSON 변환)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // 3. OkHttp (통신 로그 확인용)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }
