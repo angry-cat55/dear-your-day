@@ -37,6 +37,12 @@ public class UserService {
         return savedUser.getUserId();
     }
 
+    // 아이디 중복 확인 기능
+    public Boolean isLoginIdDuplicate(String loginId) {
+        // 1. loginId로 존재 여부 확인 후 반환
+        return userRepository.existsByLoginId(loginId);
+    }
+
     // 로그인 기능
     public LoginResponse login(LoginRequest request) {
         // 1. 아이디로 유저 찾기 (없으면 에러 처리)

@@ -23,6 +23,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userId);
     }
 
+    // 아이디 중복 확인 API
+    @GetMapping("/checkId")
+    public ResponseEntity<Boolean> checkId(@RequestParam String loginId) {
+        Boolean isDuplicate = userService.isLoginIdDuplicate(loginId); // 서비스 호출해서 아이디 중복 여부 반환.
+        // 중복일 경우 true, 없을 경우 false 반환
+
+        // 반환 성공하면 "200 Ok" 상태코드와 함께 결과 전달
+        return ResponseEntity.ok(isDuplicate);
+    }
+
     // 로그인 API
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) { // 화면 정보를 DTO로 매칭시켜 저장
