@@ -67,4 +67,7 @@ dependencies {
 
     // 3. OkHttp (통신 로그 확인용)
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    // 4. 기본 이미지 아이콘
+    implementation("androidx.compose.material:material-icons-extended")
 }

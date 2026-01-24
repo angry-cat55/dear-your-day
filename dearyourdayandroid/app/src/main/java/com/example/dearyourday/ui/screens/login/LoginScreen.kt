@@ -1,16 +1,22 @@
 package com.example.dearyourday.ui.screens.login
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dearyourday.R
 import com.example.dearyourday.data.UserSession
 import com.example.dearyourday.data.api.*
 import com.example.dearyourday.data.model.user.*
@@ -19,8 +25,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(navController: NavController) {
     // 화면에서 사용할 변수들 (상태)
-    var loginId by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var loginId by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -35,11 +41,14 @@ fun LoginScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // 제목
-            Text(
-                text = "Dear Your Day",
-                fontSize = 32.sp,
-                modifier = Modifier.padding(bottom = 32.dp)
+            // 로고 이미지
+            Image(
+                painter = painterResource(id = R.drawable.main_logo_transparent),
+                contentDescription = "로고 이미지",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                contentScale = ContentScale.Fit
             )
 
             // 아이디
@@ -47,7 +56,14 @@ fun LoginScreen(navController: NavController) {
                 value = loginId,
                 onValueChange = { loginId = it },
                 label = { Text("아이디") },
-                modifier = Modifier.fillMaxWidth()
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF6A5AE0),
+                    unfocusedBorderColor = Color.LightGray
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -58,7 +74,14 @@ fun LoginScreen(navController: NavController) {
                 onValueChange = { password = it },
                 label = { Text("비밀번호") },
                 visualTransformation = PasswordVisualTransformation(), // 비밀번호 가리기
-                modifier = Modifier.fillMaxWidth()
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF6A5AE0),
+                    unfocusedBorderColor = Color.LightGray
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -79,7 +102,8 @@ fun LoginScreen(navController: NavController) {
                             // 3. 결과 확인
                             if (response.isSuccessful && result != null) {
 
-                                // 성공 시 처리 (일단 토스트 메시지만)
+                                // 성공 시 처리 (테스트용 토스트 메시지)
+                                // TODO: 개발 진도에 따라 해당 로직 삭제할 것
                                 Toast.makeText(context, "로그인 성공! 환영합니다 ${result?.nickname ?: "사용자"}님", Toast.LENGTH_LONG).show()
                                 UserSession.userId = result.userId
                                 UserSession.nickname = result.nickname
