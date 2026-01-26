@@ -16,6 +16,7 @@ import com.example.dearyourday.data.api.RetrofitInstance
 import com.example.dearyourday.data.model.diary.DiaryResponse
 import com.example.dearyourday.ui.components.DiaryScaffold
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun MainDiaryScreen(
@@ -56,11 +57,15 @@ fun MainDiaryScreen(
             isLoading = false;
         }
     }
-    
+
+    // 작성할 일기 날짜 포맷팅
+    val formattedDate = LocalDate.parse(targetDate)
+        .format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+
     // 화면 그리기
     DiaryScaffold(
         navController = navController,
-        title = targetDate
+        title = "오늘의 하루," + formattedDate
     ) { innerPadding ->
         // 로딩 상태일 경우 로딩 화면 출력
         if (isLoading) {
@@ -95,7 +100,13 @@ fun MainDiaryScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 // 2. 모아보기 이동 버튼 (햄버거 메뉴 대용)
-                Button(onClick = { navController.navigate("monthly_diaries") }) {
+                Button(onClick = {
+                    try {
+                        navController.navigate("monthly_diaries")
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "에러 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }) {
                     Text("일기 모아보기 (캘린더)")
                 }
 

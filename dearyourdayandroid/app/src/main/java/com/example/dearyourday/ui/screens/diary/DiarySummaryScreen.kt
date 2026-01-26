@@ -14,7 +14,7 @@ import com.example.dearyourday.ui.components.DiaryScaffold
 fun DiarySummaryScreen(navController: NavController) {
     DiaryScaffold(
         navController = navController,
-        title = "2026.01.16"
+        title = "지금의 나"
     ) { innerPadding ->
         Column(
             modifier = Modifier

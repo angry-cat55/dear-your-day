@@ -31,9 +31,6 @@ fun WriteDiaryScreen(
 ) {
     // suspend 함수 사용을 위한 객체
     val coroutineScope = rememberCoroutineScope()
-    // 작성할 일기 날짜 포맷팅
-    val formattedDate = LocalDate.parse(targetDate)
-        .format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
     // 토스트 전용 메세지 저장 변수
     val context = LocalContext.current
 
@@ -69,14 +66,19 @@ fun WriteDiaryScreen(
         }
     }
 
+    // 작성할 일기 날짜 포맷팅
+    val formattedDate = LocalDate.parse(targetDate)
+        .format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+
     DiaryScaffold(
         navController = navController,
-        title = formattedDate
+        title = "오늘의 하루," + formattedDate
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -86,7 +88,9 @@ fun WriteDiaryScreen(
             OutlinedTextField(
                 value = content, onValueChange = { content = it },
                 label = { Text("오늘 하루는 어땠나요?") },
-                modifier = Modifier.height(200.dp)
+                modifier = Modifier
+                    .height(200.dp)
+                    .fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(20.dp))
