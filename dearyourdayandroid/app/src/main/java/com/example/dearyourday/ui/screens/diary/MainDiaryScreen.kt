@@ -47,7 +47,7 @@ fun MainDiaryScreen(
                 isLoading = false
             }
             else { // 조회할 일기가 없을 경우
-                navController.navigate("write_diary/$targetDate") {
+                navController.navigate("write_diary/$targetDate?mode=write") {
                     popUpTo("main_diary/$targetDate") { inclusive = true }
                 }
             }
@@ -60,7 +60,7 @@ fun MainDiaryScreen(
     // 화면 그리기
     DiaryScaffold(
         navController = navController,
-        title = "2026.01.26"
+        title = targetDate
     ) { innerPadding ->
         // 로딩 상태일 경우 로딩 화면 출력
         if (isLoading) {
@@ -86,12 +86,10 @@ fun MainDiaryScreen(
                 // 1. 일기 쓰기 테스트 버튼
                 Button(
                     onClick = {
-                        navController.navigate("write_diary/$targetDate") {
-                            popUpTo("main_diary/$targetDate") { inclusive = true }
-                        }
+                        navController.navigate("write_diary/$targetDate?mode=edit")
                     }
                 ) {
-                    Text("일기 쓰러 가기 (작성 안 된 날)")
+                    Text("일기 수정하러 가기")
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))

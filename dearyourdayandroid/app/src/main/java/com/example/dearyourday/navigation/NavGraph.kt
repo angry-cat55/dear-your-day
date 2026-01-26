@@ -54,13 +54,22 @@ fun NavGraph(navController: NavHostController) {
             MainDiaryScreen(navController = navController, targetDate = targetDate)
         }
         composable(
-            route = "write_diary/{targetDate}",
+            route = "write_diary/{targetDate}?mode={mode}",
             arguments = listOf(
-                navArgument("targetDate") { type = NavType.StringType }
+                navArgument("targetDate") { type = NavType.StringType },
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = "write"
+                }
             )
         ) { backStackEntry ->
             val targetDate = backStackEntry.arguments?.getString("targetDate") ?: today
-            WriteDiaryScreen(navController = navController, targetDate = targetDate)
+            val mode = backStackEntry.arguments?.getString("mode") ?: "write"
+            WriteDiaryScreen(
+                navController = navController,
+                targetDate = targetDate,
+                mode = mode
+            )
         }
         composable("monthly_diaries") {
             MonthlyDiariesScreen(navController = navController)

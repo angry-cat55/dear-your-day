@@ -28,8 +28,8 @@ import java.time.LocalDate
 @Composable
 fun LoginScreen(navController: NavController) {
     // 화면에서 사용할 변수들 (상태)
-    var loginId by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var loginId by rememberSaveable { mutableStateOf("root") }
+    var password by rememberSaveable { mutableStateOf("1234") }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     // TODO: 로컬 스토리지 등을 통해 자동 로그인 로직 변경 (일단 하드코딩)
