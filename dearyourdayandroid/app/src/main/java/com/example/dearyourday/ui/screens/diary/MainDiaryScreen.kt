@@ -79,12 +79,18 @@ fun MainDiaryScreen(
                 Spacer(modifier = Modifier.height(50.dp))
                 Text("메인 화면 (오늘의 일기)", fontSize = 24.sp)
 
-                Text(diaryData!!.content, fontSize = 16.sp)
+                diaryData?.let { Text(it.content, fontSize = 16.sp) }
 
                 Spacer(modifier = Modifier.height(100.dp))
 
                 // 1. 일기 쓰기 테스트 버튼
-                Button(onClick = { navController.navigate("write_diary") }) {
+                Button(
+                    onClick = {
+                        navController.navigate("write_diary/$targetDate") {
+                            popUpTo("main_diary/$targetDate") { inclusive = true }
+                        }
+                    }
+                ) {
                     Text("일기 쓰러 가기 (작성 안 된 날)")
                 }
 

@@ -1,7 +1,7 @@
 package com.example.dearyourday.data.model.diary
 
-import java.time.LocalDate
-import java.time.LocalDateTime
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 // 월별 일기 목록 응답
 data class DiaryMonthResponse(
@@ -11,6 +11,7 @@ data class DiaryMonthResponse(
 )
 
 // 특정 일기 내용 응답
+@Parcelize
 data class DiaryResponse(
     val diaryId: Long,
     val content: String,
@@ -18,7 +19,7 @@ data class DiaryResponse(
     val moodCode: String,
     val updatedAt: String,
     val aiComment: String?
-)
+) : Parcelable
 
 // 일기 작성 요청
 data class DiaryWriteRequest(
