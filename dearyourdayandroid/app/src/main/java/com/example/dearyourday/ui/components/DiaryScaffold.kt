@@ -68,11 +68,17 @@ fun DiaryScaffold(
                         label = { Text(item.title) },
                         selected = false,
                         onClick = {
-                            // 메뉴 클릭 시 이동 및 서랍 닫기
                             scope.launch { drawerState.close() }
-                            navController.navigate(item.route) {
-                                // TODO: 오늘의 일기 화면 제외 스택 쌓기 방지 로직 구현
-                                launchSingleTop = true
+                            if (item.route == "main_diary") {
+                                val today = java.time.LocalDate.now().toString()
+                                navController.navigate("main_diary/$today") {
+                                    popUpTo(0) { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                navController.navigate(item.route) {
+                                    launchSingleTop = true
+                                }
                             }
                         },
                         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
