@@ -70,8 +70,14 @@ public class DiaryController {
         // userId와 date를 통해 한 일기 데이터 조회 후 저장
         DiaryResponse response = diaryService.findByDate(userId, date);
 
+        // 일기가 없으면 "204 No Content" 상태코드 반환 (Body 없이)
+        if (response == null) {
+            return ResponseEntity.noContent().build();
+        }
         // 성공하면 "200 OK" 상태코드와 함께 일기 정보 DTO 전달
-        return ResponseEntity.ok(response);
+        else {
+            return ResponseEntity.ok(response);
+        }
     }
 
     // 월별 일기 목록 조회
