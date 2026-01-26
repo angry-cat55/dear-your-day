@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 // 월별 일기 목록 응답
 data class DiaryMonthResponse(
     val diaryId: Long,
-    val writtenDate: LocalDate,
+    val writtenDate: String,
     val moodCode: String
 )
 
@@ -14,16 +14,16 @@ data class DiaryMonthResponse(
 data class DiaryResponse(
     val diaryId: Long,
     val content: String,
-    val writtenDate: LocalDate,
+    val writtenDate: String,
     val moodCode: String,
-    val updatedAt: LocalDateTime,
+    val updatedAt: String,
     val aiComment: String?
 )
 
 // 일기 작성 요청
 data class DiaryWriteRequest(
     val userId: Long,
-    val writtenDate: LocalDate,
+    val writtenDate: String,
     val content: String,
     val moodCode: String
 )

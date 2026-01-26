@@ -6,5 +6,5 @@ import java.time.LocalDateTime
 data class AiSummaryResponse(
     val summaryId: Long,
     val content: String,
-    val updatedAt: LocalDateTime
+    val updatedAt: String
 )
