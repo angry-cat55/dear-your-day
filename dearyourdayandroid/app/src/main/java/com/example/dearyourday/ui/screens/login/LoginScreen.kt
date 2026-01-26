@@ -3,6 +3,7 @@ package com.example.dearyourday.ui.screens.login
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,12 +16,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dearyourday.R
 import com.example.dearyourday.data.UserSession
 import com.example.dearyourday.data.api.*
 import com.example.dearyourday.data.model.user.*
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -29,6 +32,8 @@ fun LoginScreen(navController: NavController) {
     var password by rememberSaveable { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    // TODO: 로컬 스토리지 등을 통해 자동 로그인 로직 변경 (일단 하드코딩)
+    var checked by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -38,9 +43,10 @@ fun LoginScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(64.dp))
+
             // 로고 이미지
             Image(
                 painter = painterResource(id = R.drawable.main_logo_transparent),
@@ -84,7 +90,25 @@ fun LoginScreen(navController: NavController) {
                     .padding(horizontal = 20.dp)
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // 자동 로그인 체크박스 + 텍스트
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Checkbox(
+                    checked = checked,
+                    onCheckedChange = { checked = it }
+                )
+                Text("자동 로그인", fontSize = 14.sp)
+            }
+
+
+            Spacer(modifier = Modifier.height(30.dp))
 
             // 로그인
             Button(
@@ -109,7 +133,8 @@ fun LoginScreen(navController: NavController) {
                                 UserSession.nickname = result.nickname
 
                                 // 화면 이동
-                                navController.navigate("main_diary") {
+                                val today = LocalDate.now().toString();
+                                navController.navigate("main_diary/$today") {
                                     popUpTo("login") { inclusive = true }
                                 }
                             } else {
@@ -120,10 +145,12 @@ fun LoginScreen(navController: NavController) {
                             // 에러 (인터넷 끊김, 서버 꺼짐 등)
                             e.printStackTrace()
                             Toast.makeText(context, "에러 발생: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
+                  }
                     }
                 },
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                modifier = Modifier
+                    .fillMaxWidth().height(50.dp)
+                    .padding(horizontal = 20.dp)
             ) {
                 Text(text = "로그인")
             }

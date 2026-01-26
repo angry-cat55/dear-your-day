@@ -2,8 +2,10 @@ package com.example.dearyourday.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.dearyourday.ui.screens.diary.DiarySummaryScreen
 import com.example.dearyourday.ui.screens.diary.MainDiaryScreen
 import com.example.dearyourday.ui.screens.diary.MonthlyDiariesScreen
@@ -13,9 +15,12 @@ import com.example.dearyourday.ui.screens.signup.SignUpCompleteScreen
 import com.example.dearyourday.ui.screens.signup.SignUpStep1Screen
 import com.example.dearyourday.ui.screens.signup.SignUpStep2Screen
 import com.example.dearyourday.ui.screens.signup.SignUpStep3Screen
+import java.time.LocalDate
 
 @Composable
 fun NavGraph(navController: NavHostController) {
+    val today = LocalDate.now().toString()
+
     NavHost(
         navController = navController,
         startDestination = "login"
@@ -39,11 +44,23 @@ fun NavGraph(navController: NavHostController) {
         }
 
         // --- 메인 흐름 ---
-        composable("main_diary") {
-            MainDiaryScreen(navController = navController)
+        composable(
+            route = "main_diary/{targetDate}",
+            arguments = listOf(
+                navArgument("targetDate") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val targetDate = backStackEntry.arguments?.getString("targetDate") ?: today
+            MainDiaryScreen(navController = navController, targetDate = targetDate)
         }
-        composable("write_diary") {
-            WriteDiaryScreen(navController = navController)
+        composable(
+            route = "write_diary/{targetDate}",
+            arguments = listOf(
+                navArgument("targetDate") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val targetDate = backStackEntry.arguments?.getString("targetDate") ?: today
+            WriteDiaryScreen(navController = navController, targetDate = targetDate)
         }
         composable("monthly_diaries") {
             MonthlyDiariesScreen(navController = navController)

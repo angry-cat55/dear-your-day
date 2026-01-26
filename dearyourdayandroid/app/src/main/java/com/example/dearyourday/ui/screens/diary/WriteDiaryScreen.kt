@@ -9,9 +9,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dearyourday.ui.components.DiaryScaffold
+import java.time.LocalDate
 
 @Composable
-fun WriteDiaryScreen(navController: NavController) {
+fun WriteDiaryScreen(
+    navController: NavController,
+    targetDate: String = LocalDate.now().toString()
+) {
     DiaryScaffold(
         navController = navController,
         title = "2026.01.26"
@@ -35,8 +39,10 @@ fun WriteDiaryScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(onClick = {
-                // 저장 후 메인으로 복귀 (popBackStack)
-                navController.popBackStack()
+                // 저장 후 메인으로 복귀
+                navController.navigate("main_diary/$targetDate") {
+                    popUpTo("write_diary/$targetDate") { inclusive = true }
+                }
             }) {
                 Text("저장하기")
             }
