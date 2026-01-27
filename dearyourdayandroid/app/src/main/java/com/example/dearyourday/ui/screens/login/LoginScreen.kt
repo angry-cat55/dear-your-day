@@ -45,7 +45,7 @@ fun LoginScreen(navController: NavController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(128.dp))
 
             // 로고 이미지
             Image(
@@ -149,7 +149,8 @@ fun LoginScreen(navController: NavController) {
                     }
                 },
                 modifier = Modifier
-                    .fillMaxWidth().height(50.dp)
+                    .fillMaxWidth()
+                    .height(50.dp)
                     .padding(horizontal = 20.dp)
             ) {
                 Text(text = "로그인")
