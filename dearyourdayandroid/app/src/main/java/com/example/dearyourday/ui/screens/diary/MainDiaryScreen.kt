@@ -25,6 +25,7 @@ import com.example.dearyourday.data.api.RetrofitInstance
 import com.example.dearyourday.data.model.Mood
 import com.example.dearyourday.data.model.diary.DiaryResponse
 import com.example.dearyourday.ui.components.DiaryScaffold
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -40,6 +41,10 @@ fun MainDiaryScreen(
     var diaryData by rememberSaveable { mutableStateOf<DiaryResponse?>(null) }
     // 토스트 전용 메세지 저장 변수
     val context = LocalContext.current
+    // suspend 함수 사용을 위한 객체
+    val coroutineScope = rememberCoroutineScope()
+    // 다이얼로그 표시 여부를 제어할 변수
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(targetDate) {
         // 변수 초기화
@@ -57,8 +62,7 @@ fun MainDiaryScreen(
             if (response.body() != null) { // 일기 조회 성공할 경우
                 diaryData = response.body()
                 isLoading = false
-            }
-            else { // 조회할 일기가 없을 경우
+            } else { // 조회할 일기가 없을 경우
                 navController.navigate("write_diary/$targetDate?mode=write") {
                     popUpTo("main_diary/$targetDate") { inclusive = true }
                 }
@@ -97,14 +101,14 @@ fun MainDiaryScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(40.dp))
-                
+
                 // 상단 타이틀 문구
                 Text("나의 하루는,", fontSize = 20.sp)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 // 조회한 일기 데이터 적용
-                diaryData?.let {
+                diaryData?.let { diary -> // it 대신 명확하게 diary로 명명
                     // 일기 내용
                     Box(
                         modifier = Modifier
@@ -118,7 +122,7 @@ fun MainDiaryScreen(
                             )
                     ) {
                         Text(
-                            text = it.content,
+                            text = diary.content,
                             fontSize = 16.sp,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -130,7 +134,7 @@ fun MainDiaryScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     // 일기 관련 정보 및 수정/삭제 버튼
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -150,7 +154,7 @@ fun MainDiaryScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = Mood.from(it.moodCode)?.emoji ?: "?",
+                                    text = Mood.from(diary.moodCode)?.emoji ?: "?",
                                     textAlign = TextAlign.Center
                                 )
                             }
@@ -159,7 +163,7 @@ fun MainDiaryScreen(
 
                             // 작성 혹은 최근 수정 시간
                             // LocalDateTime -> String 포맷팅
-                            val formattedDateTime = LocalDateTime.parse(it.updatedAt)
+                            val formattedDateTime = LocalDateTime.parse(diary.updatedAt)
                                 .format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm"))
                             Text(
                                 text = formattedDateTime,
@@ -187,10 +191,61 @@ fun MainDiaryScreen(
 
                             // 일기 삭제 버튼
                             TextButton(
-                                onClick = { },
+                                onClick = {
+                                    // 삭제 확인 다이얼로그 띄우기
+                                    showDeleteDialog = true
+                                },
                                 modifier = Modifier.height(35.dp)
                             ) {
                                 Text("삭제")
+                            }
+
+                            // 삭제 다이얼로그 (분리된 컴포넌트 호출)
+                            if (showDeleteDialog) {
+                                DeleteConfirmDialog(
+                                    onDismiss = {
+                                        // 아니오, 취소 시
+                                        showDeleteDialog = false
+                                    },
+                                    onConfirm = {
+                                        // 예 버튼 클릭 시 실행될 로직
+                                        showDeleteDialog = false // 다이얼로그 닫기
+
+                                        coroutineScope.launch {
+                                            try {
+                                                // 일기 삭제 API 요청 및 응답
+                                                val response = RetrofitInstance.diaryApi
+                                                    .deleteDiary(diary.diaryId, UserSession.userId)
+
+                                                // 삭제에 실패할 경우
+                                                if (!response.isSuccessful) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "삭제를 실패했습니다.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                    return@launch
+                                                }
+
+                                                // 삭제에 성공할 경우 전 화면(하루 보관함 or 오늘의 하루)으로 이동
+                                                // TODO: 일단 오늘의 하루로 이동을 하지만, 추후에 전 화면 구분 로직 구현할 것
+                                                if (true/*전 화면이 오늘의 하루일 때*/) {
+                                                    // 현재 화면 스택 하나 제거
+                                                    navController.popBackStack()
+                                                    // 오늘의 하루로 이동
+                                                    navController.navigate("main_diary/$targetDate")
+                                                }
+
+                                            } catch (e: Exception) { //예외 상황 발생할 경우 (서버 끊김 등)
+                                                Toast.makeText(
+                                                    context,
+                                                    "에러 발생: ${e.message}",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                    }
+                                )
                             }
                         }
                     }
@@ -204,7 +259,7 @@ fun MainDiaryScreen(
 
                     // AI 코멘트 생성 여부 판단
                     // 비어 있을 경우
-                    if (it.aiComment.isNullOrEmpty()) {
+                    if (diary.aiComment.isNullOrEmpty()) {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
@@ -227,7 +282,7 @@ fun MainDiaryScreen(
                                 )
                         ) {
                             Text(
-                                text = it.aiComment,
+                                text = diary.aiComment,
                                 fontSize = 16.sp,
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -242,4 +297,33 @@ fun MainDiaryScreen(
             }
         }
     }
+}
+
+// 분리한 삭제 확인 다이얼로그 컴포저블
+@Composable
+fun DeleteConfirmDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "삭제 확인")
+        },
+        text = {
+            Text(text = "정말로 삭제하시겠습니까?")
+        },
+        confirmButton = {
+            // 예 버튼
+            TextButton(onClick = onConfirm) {
+                Text("예")
+            }
+        },
+        dismissButton = {
+            // 아니오 버튼
+            TextButton(onClick = onDismiss) {
+                Text("아니오")
+            }
+        }
+    )
 }

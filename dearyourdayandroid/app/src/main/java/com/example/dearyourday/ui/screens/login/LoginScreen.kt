@@ -126,9 +126,7 @@ fun LoginScreen(navController: NavController) {
                             // 3. 결과 확인
                             if (response.isSuccessful && result != null) {
 
-                                // 성공 시 처리 (테스트용 토스트 메시지)
-                                // TODO: 개발 진도에 따라 해당 로직 삭제할 것
-                                Toast.makeText(context, "로그인 성공! 환영합니다 ${result?.nickname ?: "사용자"}님", Toast.LENGTH_LONG).show()
+                                // 성공 시 UserSession에 유저 정보 저장
                                 UserSession.userId = result.userId
                                 UserSession.nickname = result.nickname
 

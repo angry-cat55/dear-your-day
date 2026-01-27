@@ -10,6 +10,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -99,12 +100,30 @@ fun WriteDiaryScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            OutlinedTextField(
-                value = content, onValueChange = { content = it },
+            Box(
                 modifier = Modifier
-                    .height(320.dp)
                     .fillMaxWidth()
-            )
+                    .height(320.dp)
+            ) {
+                OutlinedTextField(
+                    value = content,
+                    onValueChange = { content = it },
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+
+                // 내용 없을 때만 중앙 안내 문구
+                if (content.isEmpty()) {
+                    Text(
+                        text = "일기를 쓰면 내 친구 AI가 읽고\n코멘트를 남겨줘요.",
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center,
+                        fontSize = 14.sp,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
+
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -156,72 +175,98 @@ fun WriteDiaryScreen(
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            Button(
-                onClick = {
-                    // 일기 저장 가능 확인
-                    if (content.isNullOrBlank()) { // null, 길이 0, 공백, 개행문자 모두 true로 반환
-                        Toast.makeText(context, "내용을 작성해주세요.", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                    else if (moodCode.isNullOrBlank()) {
-                        Toast.makeText(context, "기분을 선택해주세요.", Toast.LENGTH_SHORT)
-                            .show()
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // 수정 모드로 들어왔을 경우에만 취소 버튼 활성화
+                if (mode == "edit") {
+                    // 취소 버튼
+                    OutlinedButton(
+                        onClick = {
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.height(50.dp)
+                    ) {
+                        Text("취소")
                     }
 
-                    coroutineScope.launch {
-                        // 현재 작업된 새 일기 객체 생성
-                        val request = DiaryWriteRequest(
-                            userId = UserSession.userId,
-                            writtenDate = targetDate,
-                            content = content,
-                            moodCode = moodCode
-                        )
-                        try {
-                            // 수정 상황일 때
-                            if (mode == "edit") {
-                                // 일기 데이터 변경 여부 확인 후, 변경이 있으면 DB에 UPDATE
-                                val isChanged =
-                                    content != originalDiary.content || moodCode != originalDiary.moodCode
-                                if (isChanged) {
-                                    val response = RetrofitInstance.diaryApi.updateDiary(
-                                        diaryData!!.diaryId, request
-                                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+
+                // 저장 버튼
+                Button(
+                    onClick = {
+                        // 일기 저장 가능 확인
+                        if (content.isNullOrBlank()) { // null, 길이 0, 공백, 개행문자 모두 true로 반환
+                            Toast.makeText(context, "내용을 작성해주세요.", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        } else if (moodCode.isNullOrBlank()) {
+                            Toast.makeText(context, "기분을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+
+                        coroutineScope.launch {
+                            // 현재 작업된 새 일기 객체 생성
+                            val request = DiaryWriteRequest(
+                                userId = UserSession.userId,
+                                writtenDate = targetDate,
+                                content = content,
+                                moodCode = moodCode
+                            )
+                            try {
+                                // 수정 상황일 때
+                                if (mode == "edit") {
+                                    // 일기 데이터 변경 여부 확인
+                                    val isChanged =
+                                        content != originalDiary.content || moodCode != originalDiary.moodCode
+                                    //  변경된 내용이 있을 경우에만 DB에 UPDATE
+                                    if (isChanged) {
+                                        val response = RetrofitInstance.diaryApi.updateDiary(
+                                            diaryData!!.diaryId, request
+                                        )
+                                        if (!response.isSuccessful) {
+                                            Toast.makeText(
+                                                context,
+                                                "일기 수정에 실패했습니다.",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                                .show()
+                                            return@launch
+                                        }
+                                    }
+                                }
+                                // 쓰기 상황일 때
+                                else {
+                                    val response = RetrofitInstance.diaryApi.writeDiary(request)
                                     if (!response.isSuccessful) {
                                         Toast.makeText(
                                             context,
-                                            "일기 수정에 실패했습니다.",
+                                            "일기 저장에 실패했습니다.",
                                             Toast.LENGTH_SHORT
                                         )
                                             .show()
                                         return@launch
                                     }
                                 }
-                            }
-                            // 쓰기 상황일 때
-                            else {
-                                val response = RetrofitInstance.diaryApi.writeDiary(request)
-                                if (!response.isSuccessful) {
-                                    Toast.makeText(context, "일기 저장에 실패했습니다.", Toast.LENGTH_SHORT)
-                                        .show()
-                                    return@launch
-                                }
-                            }
 
-                            // 일기 저장/수정 성공할 경우 -> 메인으로 이동
-                            navController.navigate("main_diary/$targetDate") {
-                                popUpTo("write_diary/$targetDate") { inclusive = true }
+                                // 일기 저장/수정 성공할 경우 -> 메인으로 이동
+                                navController.navigate("main_diary/$targetDate") {
+                                    popUpTo("write_diary/$targetDate") { inclusive = true }
+                                }
+                            } catch (e: Exception) { // 예외 상황 발생할 경우 (서버 끊김 등)
+                                Toast.makeText(context, "에러 발생: ${e.message}", Toast.LENGTH_SHORT)
+                                    .show()
                             }
-                        } catch (e: Exception) { // 예외 상황 발생할 경우 (서버 끊김 등)
-                            Toast.makeText(context, "에러 발생: ${e.message}", Toast.LENGTH_SHORT)
-                                .show()
                         }
-                    }
-                },
-                modifier = Modifier
-                    .width(270.dp)
-                    .height(50.dp)
-            ) {
-                Text("저장하기")
+                    },
+                    modifier = Modifier
+                        .width(270.dp)
+                        .height(50.dp)
+                ) {
+                    Text("저장하기")
+                }
             }
         }
     }
