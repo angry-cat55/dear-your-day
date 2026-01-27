@@ -23,6 +23,7 @@ import com.example.dearyourday.data.model.DiarySnapshot
 import com.example.dearyourday.data.model.Mood
 import com.example.dearyourday.data.model.diary.DiaryResponse
 import com.example.dearyourday.data.model.diary.DiaryWriteRequest
+import com.example.dearyourday.ui.components.ConfirmDialog
 import com.example.dearyourday.ui.components.DiaryScaffold
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -48,6 +49,8 @@ fun WriteDiaryScreen(
 
     // 변경 여부 확인용 클래스 (일기 내용, 기분 이모지 코드)
     var originalDiary by rememberSaveable { mutableStateOf(DiarySnapshot()) }
+    // 다이얼로그 표시 여부를 제어할 변수
+    var showSaveDialog by remember { mutableStateOf(false) }
 
     // 일기 수정을 위한 화면일 경우
     LaunchedEffect(mode, targetDate) {
@@ -207,80 +210,95 @@ fun WriteDiaryScreen(
                             return@Button
                         }
 
-                        coroutineScope.launch {
-                            // 현재 작업된 새 일기 객체 생성
-                            val request = DiaryWriteRequest(
-                                userId = UserSession.userId,
-                                writtenDate = targetDate,
-                                content = content,
-                                moodCode = moodCode
-                            )
-                            try {
-                                // 수정 상황일 때
-                                if (mode == "edit") {
-                                    // 변경 여부 판단
-                                    val contentChanged = content != originalDiary.content
-                                    val moodChanged = moodCode != originalDiary.moodCode
-
-                                    // 내용이 바뀐 경우 → updateDiary API (AI API 호출)
-                                    if (contentChanged) {
-                                        val response = RetrofitInstance.diaryApi.updateDiary(
-                                            diaryData!!.diaryId, request
-                                        )
-                                        if (!response.isSuccessful) {
-                                            Toast.makeText(
-                                                context,
-                                                "일기 수정에 실패했습니다.",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                            return@launch
-                                        }
-                                    }
-                                    // 내용은 그대로 + 기분만 바뀐 경우 → 기분 코드만 업데이트하는 API (AI API 미호출)
-                                    else if (moodChanged) {
-                                        val response = RetrofitInstance.diaryApi.updateMood(
-                                            diaryData!!.diaryId,
-                                            moodCode
-                                        )
-                                        if (!response.isSuccessful) {
-                                            Toast.makeText(
-                                                context,
-                                                "기분 수정에 실패했습니다.",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                            return@launch
-                                        }
-                                    }
-                                }
-                                // 쓰기 상황일 때
-                                else {
-                                    val response = RetrofitInstance.diaryApi.writeDiary(request)
-                                    if (!response.isSuccessful) {
-                                        Toast.makeText(
-                                            context,
-                                            "일기 저장에 실패했습니다.",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                            .show()
-                                        return@launch
-                                    }
-                                }
-
-                                // 일기 저장/수정 성공할 경우 -> 메인으로 이동
-                                navController.navigate("main_diary/$targetDate") {
-                                    popUpTo("write_diary/$targetDate") { inclusive = true }
-                                }
-                            } catch (e: Exception) { // 예외 상황 발생할 경우 (서버 끊김 등)
-                                Toast.makeText(context, "에러 발생: ${e.message}", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        }
+                        showSaveDialog = true
                     },
                     modifier = Modifier
                         .width(270.dp)
                         .height(50.dp)
                 ) {
                     Text("저장하기")
+                }
+
+                // 저장 다이얼로그 (공통 컴포넌트 호출)
+                if (showSaveDialog) {
+                    ConfirmDialog(
+                        title = "저장 확인", // 제목 변경
+                        text = "작성한 내용을 저장하시겠습니까?", // 내용 변경
+                        onConfirm = {
+                            // 다이얼로그 닫기
+                            showSaveDialog = false
+
+                            coroutineScope.launch {
+                                // 현재 작업된 새 일기 객체 생성
+                                val request = DiaryWriteRequest(
+                                    userId = UserSession.userId,
+                                    writtenDate = targetDate,
+                                    content = content,
+                                    moodCode = moodCode
+                                )
+                                try {
+                                    // 수정 상황일 때
+                                    if (mode == "edit") {
+                                        // 변경 여부 판단
+                                        val contentChanged = content != originalDiary.content
+                                        val moodChanged = moodCode != originalDiary.moodCode
+
+                                        // 내용이 바뀐 경우 → updateDiary API (AI API 호출)
+                                        if (contentChanged) {
+                                            val response = RetrofitInstance.diaryApi.updateDiary(
+                                                diaryData!!.diaryId, request
+                                            )
+                                            if (!response.isSuccessful) {
+                                                Toast.makeText(
+                                                    context,
+                                                    "일기 수정에 실패했습니다.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                return@launch
+                                            }
+                                        }
+                                        // 내용은 그대로 + 기분만 바뀐 경우 → 기분 코드만 업데이트하는 API (AI API 미호출)
+                                        else if (moodChanged) {
+                                            val response = RetrofitInstance.diaryApi.updateMood(
+                                                diaryData!!.diaryId,
+                                                moodCode
+                                            )
+                                            if (!response.isSuccessful) {
+                                                Toast.makeText(
+                                                    context,
+                                                    "기분 수정에 실패했습니다.",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                return@launch
+                                            }
+                                        }
+                                    }
+                                    // 쓰기 상황일 때
+                                    else {
+                                        val response = RetrofitInstance.diaryApi.writeDiary(request)
+                                        if (!response.isSuccessful) {
+                                            Toast.makeText(
+                                                context,
+                                                "일기 저장에 실패했습니다.",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                                .show()
+                                            return@launch
+                                        }
+                                    }
+
+                                    // 일기 저장/수정 성공할 경우 -> 메인으로 이동
+                                    navController.navigate("main_diary/$targetDate") {
+                                        popUpTo("write_diary/$targetDate") { inclusive = true }
+                                    }
+                                } catch (e: Exception) { // 예외 상황 발생할 경우 (서버 끊김 등)
+                                    Toast.makeText(context, "에러 발생: ${e.message}", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            }
+                        },
+                        onDismiss = { showSaveDialog = false }
+                    )
                 }
             }
         }

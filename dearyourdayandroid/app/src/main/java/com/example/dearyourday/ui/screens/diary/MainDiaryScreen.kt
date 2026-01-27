@@ -201,7 +201,7 @@ fun MainDiaryScreen(
                                 Text("삭제")
                             }
 
-                            // 삭제 다이얼로그 (컴포넌트 호출)
+                            // 삭제 다이얼로그 (공통 컴포넌트 호출)
                             if (showDeleteDialog) {
                                 ConfirmDialog(
                                     title = "삭제 확인",
