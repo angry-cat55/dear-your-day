@@ -1,21 +1,32 @@
 package com.example.dearyourday.ui.screens.diary
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dearyourday.data.UserSession
 import com.example.dearyourday.data.api.RetrofitInstance
+import com.example.dearyourday.data.model.Mood
 import com.example.dearyourday.data.model.diary.DiaryResponse
 import com.example.dearyourday.ui.components.DiaryScaffold
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -69,7 +80,10 @@ fun MainDiaryScreen(
     ) { innerPadding ->
         // 로딩 상태일 경우 로딩 화면 출력
         if (isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator()
             }
         }
@@ -78,41 +92,152 @@ fun MainDiaryScreen(
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(50.dp))
-                Text("메인 화면 (오늘의 일기)", fontSize = 24.sp)
-
-                diaryData?.let { Text(it.content, fontSize = 16.sp) }
-
-                Spacer(modifier = Modifier.height(100.dp))
-
-                // 1. 일기 쓰기 테스트 버튼
-                Button(
-                    onClick = {
-                        navController.navigate("write_diary/$targetDate?mode=edit")
-                    }
-                ) {
-                    Text("일기 수정하러 가기")
-                }
+                Spacer(modifier = Modifier.height(40.dp))
+                
+                // 상단 타이틀 문구
+                Text("나의 하루는,", fontSize = 20.sp)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // 2. 모아보기 이동 버튼 (햄버거 메뉴 대용)
-                Button(onClick = {
-                    try {
-                        navController.navigate("monthly_diaries")
-                    } catch (e: Exception) {
-                        Toast.makeText(context, "에러 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+                // 조회한 일기 데이터 적용
+                diaryData?.let {
+                    // 일기 내용
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(320.dp)
+                            .clip(RoundedCornerShape(4.dp)) // 내용 + 스크롤 영역 자르기
+                            .border(
+                                width = 1.dp,
+                                color = Color.Gray,
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                    ) {
+                        Text(
+                            text = it.content,
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(rememberScrollState())
+                                .padding(16.dp)
+                        )
                     }
-                }) {
-                    Text("일기 모아보기 (캘린더)")
-                }
 
-                // 3. 분석 이동 버튼 (햄버거 메뉴 대용)
-                Button(onClick = { navController.navigate("diary_summary") }) {
-                    Text("종합 공감 보기")
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // 일기 관련 정보 및 수정/삭제 버튼
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // 좌측 영역
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // 기분 이모지
+                            Box(
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .border(
+                                        width = 1.dp,
+                                        color = Color.Gray,
+                                        shape = RoundedCornerShape(4.dp)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = Mood.from(it.moodCode)?.emoji ?: "?",
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            // 작성 혹은 최근 수정 시간
+                            // LocalDateTime -> String 포맷팅
+                            val formattedDateTime = LocalDateTime.parse(it.updatedAt)
+                                .format(DateTimeFormatter.ofPattern("yy.MM.dd HH:mm"))
+                            Text(
+                                text = formattedDateTime,
+                                fontSize = 12.sp
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        // 우측 영역
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // 일기 수정 버튼
+                            TextButton(
+                                onClick = {
+                                    navController.navigate("write_diary/$targetDate?mode=edit")
+                                },
+                                modifier = Modifier.height(35.dp)
+                            ) {
+                                Text("수정")
+                            }
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            // 일기 삭제 버튼
+                            TextButton(
+                                onClick = { },
+                                modifier = Modifier.height(35.dp)
+                            ) {
+                                Text("삭제")
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // AI 코멘트 부분 문구
+                    Text("너의 하루에게.", fontSize = 20.sp)
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // AI 코멘트 생성 여부 판단
+                    // 비어 있을 경우
+                    if (it.aiComment.isNullOrEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    // 생성되어 있을 경우
+                    else {
+                        // AI 코멘트 내용
+                        Box(
+                            modifier = Modifier
+                                .weight(1f) // 남는 공간 전부
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(4.dp)) // 내용 + 스크롤 영역 자르기
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Gray,
+                                    shape = RoundedCornerShape(4.dp)
+                                )
+                        ) {
+                            Text(
+                                text = it.aiComment,
+                                fontSize = 16.sp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .verticalScroll(rememberScrollState())
+                                    .padding(16.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(60.dp))
+                    }
                 }
             }
         }

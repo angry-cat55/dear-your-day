@@ -154,7 +154,7 @@ fun WriteDiaryScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(26.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
             Button(
                 onClick = {
