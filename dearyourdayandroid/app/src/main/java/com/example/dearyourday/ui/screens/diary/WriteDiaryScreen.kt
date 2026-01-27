@@ -158,6 +158,16 @@ fun WriteDiaryScreen(
 
             Button(
                 onClick = {
+                    // 일기 저장 가능 확인
+                    if (content.isNullOrBlank()) { // null, 길이 0, 공백, 개행문자 모두 true로 반환
+                        Toast.makeText(context, "내용을 작성해주세요.", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    else if (moodCode.isNullOrBlank()) {
+                        Toast.makeText(context, "기분을 선택해주세요.", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
                     coroutineScope.launch {
                         // 현재 작업된 새 일기 객체 생성
                         val request = DiaryWriteRequest(
