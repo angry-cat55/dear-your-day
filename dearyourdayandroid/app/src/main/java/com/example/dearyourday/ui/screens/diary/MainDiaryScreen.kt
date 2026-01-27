@@ -24,6 +24,7 @@ import com.example.dearyourday.data.UserSession
 import com.example.dearyourday.data.api.RetrofitInstance
 import com.example.dearyourday.data.model.Mood
 import com.example.dearyourday.data.model.diary.DiaryResponse
+import com.example.dearyourday.ui.components.ConfirmDialog
 import com.example.dearyourday.ui.components.DiaryScaffold
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -200,16 +201,14 @@ fun MainDiaryScreen(
                                 Text("삭제")
                             }
 
-                            // 삭제 다이얼로그 (분리된 컴포넌트 호출)
+                            // 삭제 다이얼로그 (컴포넌트 호출)
                             if (showDeleteDialog) {
-                                DeleteConfirmDialog(
-                                    onDismiss = {
-                                        // 아니오, 취소 시
-                                        showDeleteDialog = false
-                                    },
+                                ConfirmDialog(
+                                    title = "삭제 확인",
+                                    text = "정말로 삭제하시겠습니까?",
                                     onConfirm = {
-                                        // 예 버튼 클릭 시 실행될 로직
-                                        showDeleteDialog = false // 다이얼로그 닫기
+                                        // 다이얼로그 닫기
+                                        showDeleteDialog = false
 
                                         coroutineScope.launch {
                                             try {
@@ -244,7 +243,8 @@ fun MainDiaryScreen(
                                                 ).show()
                                             }
                                         }
-                                    }
+                                    },
+                                    onDismiss = { showDeleteDialog = false }
                                 )
                             }
                         }
@@ -297,33 +297,4 @@ fun MainDiaryScreen(
             }
         }
     }
-}
-
-// 분리한 삭제 확인 다이얼로그 컴포저블
-@Composable
-fun DeleteConfirmDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(text = "삭제 확인")
-        },
-        text = {
-            Text(text = "정말로 삭제하시겠습니까?")
-        },
-        confirmButton = {
-            // 예 버튼
-            TextButton(onClick = onConfirm) {
-                Text("예")
-            }
-        },
-        dismissButton = {
-            // 아니오 버튼
-            TextButton(onClick = onDismiss) {
-                Text("아니오")
-            }
-        }
-    )
 }
