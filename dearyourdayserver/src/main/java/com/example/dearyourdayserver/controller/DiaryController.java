@@ -49,6 +49,16 @@ public class DiaryController {
         return ResponseEntity.ok(response);
     }
 
+    // 기분 이모지 수정 API
+    @PatchMapping("/{diaryId}/mood")
+    public ResponseEntity<Void> updateMood(
+            @PathVariable Long diaryId,
+            @RequestParam String moodCode)
+    {
+        diaryService.updateMood(diaryId, moodCode);
+        return ResponseEntity.ok().build(); // 데이터 없이 200 OK만 반환
+    }
+
     // 일기 삭제 API
     @DeleteMapping("/{diaryId}") // url로 일기 ID 전달
     public ResponseEntity<Void> deleteDiary(

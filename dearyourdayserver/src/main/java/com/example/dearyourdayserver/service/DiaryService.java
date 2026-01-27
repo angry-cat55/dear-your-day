@@ -72,6 +72,17 @@ public class DiaryService {
         return DiaryResponse.from(diary);
     }
 
+    // 기분 코드 수정 기능
+    @Transactional
+    public void updateMood(Long diaryId, String moodCode) {
+        // 1. 일기 조회
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new IllegalArgumentException("일기를 찾을 수 없습니다."));
+
+        // 2. AI 로직 없이 기분 코드만 변경
+        diary.updateMood(moodCode);
+    }
+
     // 일기 삭제 기능
     @Transactional
     public void deleteDiary(Long diaryId, Long userId) {

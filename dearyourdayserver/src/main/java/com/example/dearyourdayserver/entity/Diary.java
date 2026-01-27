@@ -64,6 +64,11 @@ public class Diary {
         this.aiGeneratedAt = null;
     }
 
+    // 기분 코드만 변경할 때 쓸 메소드
+    public void updateMood(String moodCode) {
+        this.moodCode = moodCode;
+    }
+
     // AI 코멘트 달릴 때 쓸 메소드
     public void updateAiComment(String aiComment) {
         this.aiComment = aiComment;

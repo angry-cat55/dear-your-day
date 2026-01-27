@@ -175,7 +175,7 @@ fun WriteDiaryScreen(
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -218,11 +218,12 @@ fun WriteDiaryScreen(
                             try {
                                 // 수정 상황일 때
                                 if (mode == "edit") {
-                                    // 일기 데이터 변경 여부 확인
-                                    val isChanged =
-                                        content != originalDiary.content || moodCode != originalDiary.moodCode
-                                    //  변경된 내용이 있을 경우에만 DB에 UPDATE
-                                    if (isChanged) {
+                                    // 변경 여부 판단
+                                    val contentChanged = content != originalDiary.content
+                                    val moodChanged = moodCode != originalDiary.moodCode
+
+                                    // 내용이 바뀐 경우 → updateDiary API (AI API 호출)
+                                    if (contentChanged) {
                                         val response = RetrofitInstance.diaryApi.updateDiary(
                                             diaryData!!.diaryId, request
                                         )
@@ -231,8 +232,22 @@ fun WriteDiaryScreen(
                                                 context,
                                                 "일기 수정에 실패했습니다.",
                                                 Toast.LENGTH_SHORT
-                                            )
-                                                .show()
+                                            ).show()
+                                            return@launch
+                                        }
+                                    }
+                                    // 내용은 그대로 + 기분만 바뀐 경우 → 기분 코드만 업데이트하는 API (AI API 미호출)
+                                    else if (moodChanged) {
+                                        val response = RetrofitInstance.diaryApi.updateMood(
+                                            diaryData!!.diaryId,
+                                            moodCode
+                                        )
+                                        if (!response.isSuccessful) {
+                                            Toast.makeText(
+                                                context,
+                                                "기분 수정에 실패했습니다.",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                             return@launch
                                         }
                                     }

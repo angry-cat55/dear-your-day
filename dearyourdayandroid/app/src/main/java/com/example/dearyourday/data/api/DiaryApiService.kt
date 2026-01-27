@@ -40,4 +40,11 @@ interface DiaryApiService {
         @Query("year") year: Int,
         @Query("month") month: Int
     ): Response<List<DiaryMonthResponse>>
+
+    // 기분 이모지 수정
+    @PATCH("/api/diaries/{diaryId}/mood")
+    suspend fun updateMood(
+        @Path("diaryId") diaryId: Long,
+        @Query("moodCode") moodCode: String
+    ): Response<Unit>
 }
