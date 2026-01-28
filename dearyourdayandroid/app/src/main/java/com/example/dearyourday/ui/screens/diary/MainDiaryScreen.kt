@@ -53,17 +53,51 @@ fun MainDiaryScreen(
         diaryData = null
 
         try {
-            // 1. API로 targetDate의 일기 조회
-            val response = RetrofitInstance.diaryApi.getDiaryByDate(
+            // API로 targetDate의 일기 조회
+            var response = RetrofitInstance.diaryApi.getDiaryByDate(
                 userId = UserSession.userId,
                 date = targetDate
             )
 
-            // 2. 결과에 따라 처리
-            if (response.body() != null) { // 일기 조회 성공할 경우
-                diaryData = response.body()
-                isLoading = false
-            } else { // 조회할 일기가 없을 경우
+            // 일기 조회 성공할 경우
+            if (response.body() != null) {
+                diaryData = response.body() // 일기 정보 저장 후 그리기
+                isLoading = false // 로딩 제거
+
+                // AI 코멘트가 없을 경우 폴링 (백그라운드 작업)
+                if (diaryData!!.aiComment.isNullOrEmpty()) {
+                    val maxRetry = 10 // 최대 10번 시도
+                    var retryCount = 0 // 시도 횟수
+
+                    while (retryCount < maxRetry) {
+                        kotlinx.coroutines.delay(3000) // 3초 대기
+
+                        // 서버에 일기 데이터 재요청
+                        response = RetrofitInstance.diaryApi.getDiaryByDate(
+                            userId = UserSession.userId,
+                            date = targetDate
+                        )
+
+                        // 새 일기 조회 성공할 경우
+                        if (response.body() != null) {
+                            val newDiary = response.body()!!
+
+                            // AI 코멘트가 생겼을 경우
+                            if (!newDiary.aiComment.isNullOrEmpty()) {
+                                // 데이터를 덮어씌워서 로딩바 제거 후 텍스트 그리기
+                                diaryData = newDiary
+                                break;
+                            }
+                        }
+
+                        // 시도 횟수 증가
+                        retryCount++
+                    }
+                }
+            }
+
+            // 조회할 일기가 없을 경우
+            else {
                 navController.navigate("write_diary/$targetDate?mode=write") {
                     popUpTo("main_diary/$targetDate") { inclusive = true }
                 }
@@ -273,7 +307,23 @@ fun MainDiaryScreen(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator()
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator()
+
+                                Spacer(modifier = Modifier.height(16.dp)) // 로딩과 텍스트 사이 간격
+
+                                Text(
+                                    text = "내 AI 친구가 읽는 중...",
+                                    color = Color.Gray,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 14.sp,
+                                )
+
+                                Spacer(modifier = Modifier.height(32.dp)) // 전체 컴포저블 위로 이동
+                            }
                         }
                     }
                     // 생성되어 있을 경우
