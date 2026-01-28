@@ -296,10 +296,6 @@ fun MainDiaryScreen(
                     Spacer(modifier = Modifier.height(20.dp))
 
                     // AI 코멘트 부분 문구
-                    Text("너의 하루에게.", fontSize = 20.sp)
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
                     // AI 코멘트 생성 여부 판단
                     // 비어 있을 경우
                     if (diary.aiComment.isNullOrEmpty()) {
@@ -328,6 +324,10 @@ fun MainDiaryScreen(
                     }
                     // 생성되어 있을 경우
                     else {
+                        Text("너의 하루에게.", fontSize = 20.sp)
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
                         // AI 코멘트 내용
                         Box(
                             modifier = Modifier
