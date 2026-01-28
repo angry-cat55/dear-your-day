@@ -226,13 +226,22 @@ fun MainDiaryScreen(
                                                     return@launch
                                                 }
 
-                                                // 삭제에 성공할 경우 전 화면(하루 보관함 or 오늘의 하루)으로 이동
-                                                // TODO: 일단 오늘의 하루로 이동을 하지만, 추후에 전 화면 구분 로직 구현할 것
-                                                if (true/*전 화면이 오늘의 하루일 때*/) {
-                                                    // 현재 화면 스택 하나 제거
+                                                // 삭제에 성공할 경우 전 화면(하루 보관함 or 그 외(수정 혹은 X)으로 이동
+
+                                                // 제일 최근 화면 route 값
+                                                val previousRoute = navController.previousBackStackEntry?.destination?.route
+                                                // 주소 뒤에 인자가 붙어있을 경우, '/' 앞까지만 잘라서 확인
+                                                val routeName = previousRoute?.substringBefore("/")
+
+                                                // 전 화면이 하루 보관함일 때 그냥 닫기
+                                                if (routeName == "monthly_diaries") {
                                                     navController.popBackStack()
-                                                    // 오늘의 하루로 이동
-                                                    navController.navigate("main_diary/$targetDate")
+                                                }
+                                                // 전 화면이 하루 보관함이 아닐 때 메인 화면으로 리셋
+                                                else {
+                                                    navController.navigate("main_diary/$targetDate") {
+                                                        popUpTo("main_diary/$targetDate") { inclusive = true }
+                                                    }
                                                 }
 
                                             } catch (e: Exception) { //예외 상황 발생할 경우 (서버 끊김 등)

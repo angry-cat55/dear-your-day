@@ -118,7 +118,7 @@ fun WriteDiaryScreen(
                 // 내용 없을 때만 중앙 안내 문구
                 if (content.isEmpty()) {
                     Text(
-                        text = "일기를 쓰면 내 친구 AI가 읽고\n코멘트를 남겨줘요.",
+                        text = "일기를 쓰면 내 AI 친구가 읽고\n코멘트를 남겨줘요.",
                         color = Color.Gray,
                         textAlign = TextAlign.Center,
                         fontSize = 14.sp,
@@ -131,7 +131,7 @@ fun WriteDiaryScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "오늘 하루는 어땠어요?",
+                text = "오늘 하루는 어땠어?",
                 fontSize = 16.sp,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
@@ -164,9 +164,21 @@ fun WriteDiaryScreen(
                                 modifier = Modifier.padding(start = 6.dp)
                             )
                         },
-                        colors = FilterChipDefaults.filterChipColors( // 선택된 버튼 색 지정
+                        colors = FilterChipDefaults.filterChipColors(
+                            // 선택된 버튼 색 지정
                             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            // 기본 버튼 색 지정
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            labelColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                        border = FilterChipDefaults.filterChipBorder(
+                            selected = (moodCode == mood.name),      // 현재 선택 여부
+                            enabled = true,
+                            borderColor = MaterialTheme.colorScheme.primary, // 테두리 색
+                            borderWidth = 1.dp, // 테두리 두께
+                            selectedBorderColor = MaterialTheme.colorScheme.primary, // 선택 시 테두리 색
+                            selectedBorderWidth = 1.dp // 선택 테두리 두께
                         ),
                         modifier = Modifier
                             .width(180.dp)
