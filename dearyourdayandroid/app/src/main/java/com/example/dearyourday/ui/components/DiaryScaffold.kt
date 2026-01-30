@@ -124,8 +124,8 @@ fun DiaryScaffold(
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    // [중요] 위치 보정을 위한 투명 텍스트
-                                    // 아래에 있는 날짜만큼 위에도 공간을 차지하게 하여, 메인 타이틀을 정중앙에 고정시킵니다.
+                                    // 위치 보정을 위한 투명 텍스트
+                                    // 아래에 있는 날짜만큼 위에도 공간을 차지하게 하여, 메인 타이틀을 정중앙에 고정
                                     Text(
                                         text = date,
                                         style = MaterialTheme.typography.bodySmall,

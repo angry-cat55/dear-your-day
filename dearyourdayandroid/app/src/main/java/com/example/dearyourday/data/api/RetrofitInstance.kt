@@ -10,7 +10,7 @@ object RetrofitInstance {
     // 안드로이드 에뮬레이터에서 백엔드(localhost) 접속 주소
     //    private const val BASE_URL = "http://10.0.2.2:8080/"
     // 갤럭시 실기기에서 접속 주소
-    private  const val BASE_URL = "http://192.168.219.63:8080/"
+    private  const val BASE_URL = "http://192.168.0.21:8080/"
 
     // 1. 로그를 찍어주는 감시자 (통신 내용 확인용)
     private val loggingInterceptor = HttpLoggingInterceptor().apply {

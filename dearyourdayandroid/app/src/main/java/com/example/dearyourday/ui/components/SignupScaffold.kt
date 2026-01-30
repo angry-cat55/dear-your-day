@@ -9,6 +9,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +32,10 @@ fun SignupScaffold(
                 title = {
                     // 타이틀이 있으면 보여주고, 없으면 빈 공간
                     if (title.isNotEmpty()) {
-                        Text(text = title)
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleLarge
+                        )
                     }
                 },
                 navigationIcon = {
