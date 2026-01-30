@@ -8,12 +8,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dearyourday.ui.components.SignupScaffold
 
 @Composable
 fun SignUpStep1Screen(navController: NavController) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    SignupScaffold(
+        navController = navController,
+        title = "회원가입"
+    ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
