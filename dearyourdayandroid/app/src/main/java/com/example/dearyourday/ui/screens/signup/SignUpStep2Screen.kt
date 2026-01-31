@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -11,12 +12,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dearyourday.data.model.SignUpViewModel
+import com.example.dearyourday.ui.components.PhoneNumberVisualTransformation
 import com.example.dearyourday.ui.components.SignupContentLayout
 import com.example.dearyourday.ui.components.SignupScaffold
 
@@ -60,8 +65,16 @@ fun SignUpStep2Screen(
                 // 전화번호
                 OutlinedTextField(
                     value = phoneNumber,
-                    onValueChange = { phoneNumber = it },
+                    onValueChange = { newValue ->
+                        // 최대 11자리까지 입력 + 숫자만 입력 가능
+                        if (newValue.length <= 11 && newValue.all { it.isDigit() }) {
+                            phoneNumber = newValue
+                        }
+                    },
                     label = { Text("전화번호") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), // 숫자 키보드 설정
+                    visualTransformation = PhoneNumberVisualTransformation(), // 전화번호 포맷팅
+                    singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFF6A5AE0),
@@ -75,8 +88,15 @@ fun SignUpStep2Screen(
                 // 인증번호
                 OutlinedTextField(
                     value = inputAuthCode,
-                    onValueChange = { inputAuthCode = it},
+                    onValueChange = { newValue ->
+                        // 최대 6자리까지 입력 + 숫자만 입력 가능
+                        if (newValue.length <= 6 && newValue.all { it.isDigit() }) {
+                            inputAuthCode = newValue
+                        }
+                    },
                     label = { Text("인증번호") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), // 숫자 키보드 설정
+                    singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFF6A5AE0),
