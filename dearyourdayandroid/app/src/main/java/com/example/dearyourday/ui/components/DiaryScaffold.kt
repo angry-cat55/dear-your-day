@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
@@ -31,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dearyourday.data.UserSession
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -52,7 +55,7 @@ fun DiaryScaffold(
 ) {
     // 서랍이 열렸는지 닫혔는지 기억하는 변수
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    // 서랍을 열 때 애미메이션을 돌릴 객체
+    // 서랍을 열고 닫을 때 애미메이션을 돌릴 객체
     val scope = rememberCoroutineScope()
 
     // 1. 전체를 감싸는 레이아웃
@@ -64,11 +67,16 @@ fun DiaryScaffold(
                     .width((250.dp)),
                 drawerContainerColor = Color.White
             ) {
+                // 상단 헤더
                 Spacer(modifier = Modifier.height(24.dp)) // 상단 여백
-                Text("너의 하루에게.", fontSize = 20.sp, modifier = Modifier.padding(16.dp))
+                Text(
+                    text = "너의 하루에게.",
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(16.dp)
+                )
                 HorizontalDivider()
 
-                // 메뉴 목록 만들기
+                // 중간 메뉴 목록
                 menuItems.forEach { item ->
                     NavigationDrawerItem(
                         label = { Text(item.title) },
@@ -90,6 +98,37 @@ fun DiaryScaffold(
                         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
                 }
+
+                Spacer(modifier = Modifier.weight(1f))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(9.dp))
+
+                // 하단 로그아웃 버튼
+                NavigationDrawerItem(
+                    label = { Text("로그아웃") },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = "로그아웃"
+                        )},
+                    selected = false,
+                    onClick = {
+                        scope.launch {
+                            // 1. 서랍 닫기
+                            drawerState.close()
+                            // 2. 세션 정보 초기화
+                            UserSession.clear()
+                            // 3. 로그인 화면으로 이동(스택 초기화)
+                            navController.navigate("login") {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+
+                Spacer(modifier = Modifier.height(18.dp))
             }
         }
     ) {
