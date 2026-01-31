@@ -1,5 +1,6 @@
 package com.example.dearyourday.ui.components
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,9 +26,16 @@ fun SignupContentLayout(
     onButtonClick: () -> Unit, // 버튼 눌렀을 때 동작
     content: @Composable () -> Unit // 입력창들
 ) {
+    // 빈 화면 선택 시 포커스 벗어나지도록 매니저 생성
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus() // 빈 곳 터치 시 포커스 클리어
+                })
+            }
             .padding(horizontal = 36.dp) // 좌우 배딩
             .padding(top = 80.dp, bottom = 180.dp), // 위아래 패딩
         horizontalAlignment = Alignment.CenterHorizontally

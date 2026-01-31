@@ -66,6 +66,7 @@ fun SignUpStep3Screen(
                     value = nickname,
                     onValueChange = { nickname = it },
                     label = { Text("닉네임") },
+                    singleLine = true,
                     enabled = !isLoading,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
