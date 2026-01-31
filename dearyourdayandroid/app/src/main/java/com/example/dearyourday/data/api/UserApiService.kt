@@ -9,7 +9,7 @@ interface UserApiService {
     @POST("/api/users/signup")
     suspend fun signup(
         @Body request: SignupRequest
-    ): Response<Long>
+    ): Response<Unit>
 
     // 아이디 중복 확인
     @GET("/api/users/checkId")

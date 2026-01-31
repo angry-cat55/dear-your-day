@@ -1,11 +1,13 @@
 package com.example.dearyourday.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.dearyourday.data.model.SignUpViewModel
 import com.example.dearyourday.ui.screens.diary.DiarySummaryScreen
 import com.example.dearyourday.ui.screens.diary.MainDiaryScreen
 import com.example.dearyourday.ui.screens.diary.MonthlyDiariesScreen
@@ -20,6 +22,7 @@ import java.time.LocalDate
 @Composable
 fun NavGraph(navController: NavHostController) {
     val today = LocalDate.now().toString()
+    val signUpViewModel: SignUpViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -31,16 +34,16 @@ fun NavGraph(navController: NavHostController) {
 
         // --- 회원가입 흐름 ---
         composable("signup_step1") {
-            SignUpStep1Screen(navController = navController)
+            SignUpStep1Screen(navController = navController, viewModel = signUpViewModel)
         }
         composable("signup_step2") {
-            SignUpStep2Screen(navController = navController)
+            SignUpStep2Screen(navController = navController, viewModel = signUpViewModel)
         }
         composable("signup_step3") {
-            SignUpStep3Screen(navController = navController)
+            SignUpStep3Screen(navController = navController, viewModel = signUpViewModel)
         }
         composable("signup_complete") {
-            SignUpCompleteScreen(navController = navController)
+            SignUpCompleteScreen(navController = navController, viewModel = signUpViewModel)
         }
 
         // --- 메인 흐름 ---

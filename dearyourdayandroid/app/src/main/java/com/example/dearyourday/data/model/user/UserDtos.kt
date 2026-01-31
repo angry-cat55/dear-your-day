@@ -14,10 +14,10 @@ data class LoginResponse(
 
 // 회원가입 요청
 data class SignupRequest(
-    val loginId: String,
-    val password: String,
-    val nickname: String,
-    val phoneNumber: String
+    val loginId: String = "",
+    val password: String = "",
+    val nickname: String = "",
+    val phoneNumber: String = ""
 )
 
 // 내 정보 조회 응답
