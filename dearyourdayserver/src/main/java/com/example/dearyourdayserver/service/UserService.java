@@ -16,8 +16,8 @@ public class UserService {
 
     // 회원가입 기능
     @Transactional
-    public Long signup(SignupRequest request) { // 회원가입 시 보낸 정보가 담긴 SignupRequest DTO
-        // 1. 아이디 중복 검사
+    public void signup(SignupRequest request) { // 회원가입 시 보낸 정보가 담긴 SignupRequest DTO
+        // 1. 아이디 중복 검사 - 안전성을 위해 재확인
         if (userRepository.findByLoginId(request.getLoginId()).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
@@ -31,10 +31,7 @@ public class UserService {
                 .build();
 
         // 3. 저장소에 저장
-        User savedUser = userRepository.save(user);
-
-        // 4. 가입된 유저 ID 반환
-        return savedUser.getUserId();
+        userRepository.save(user);
     }
 
     // 아이디 중복 확인 기능

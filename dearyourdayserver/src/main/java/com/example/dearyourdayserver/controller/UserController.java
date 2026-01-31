@@ -17,10 +17,10 @@ public class UserController {
     // 회원가입 API
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@RequestBody SignupRequest request) { // 화면 정보를 DTO로 매칭시켜 저장
-        Long userId = userService.signup(request); // 서비스 호출해서 회원가입 후 생성된 user_id 반환
+        userService.signup(request); // 서비스 호출해서 DB에 데이터 생성
 
-        // 성공하면 "201 Created" 상태코드와 함께 가입된 ID 전달
-        return ResponseEntity.status(HttpStatus.CREATED).body(userId);
+        // 성공하면 "204 No Content" 상태코드 전달
+        return ResponseEntity.noContent().build();
     }
 
     // 아이디 중복 확인 API
