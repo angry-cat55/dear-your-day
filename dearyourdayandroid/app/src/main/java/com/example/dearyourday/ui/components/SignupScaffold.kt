@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 fun SignupScaffold(
     navController: NavController,
     title: String = "",
+    showBackButton: Boolean = true, // 뒤로가기 버튼 공개 여부 (기본값: true)
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
@@ -39,14 +40,16 @@ fun SignupScaffold(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-                        // 안드로이드 표준 뒤로가기 화살표
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "뒤로가기"
-                        )
+                    if (showBackButton) {
+                        IconButton(onClick = {
+                            navController.popBackStack()
+                        }) {
+                            // 안드로이드 표준 뒤로가기 화살표
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "뒤로가기"
+                            )
+                        }
                     }
                 }
             )

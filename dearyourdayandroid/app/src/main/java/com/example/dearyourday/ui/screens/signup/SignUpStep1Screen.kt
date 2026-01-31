@@ -27,7 +27,6 @@ fun SignUpStep1Screen(
     navController: NavController,
     viewModel: SignUpViewModel
 ) {
-
     // 아이디
     var loginId by rememberSaveable { mutableStateOf("") }
     // 비밀번호
@@ -42,7 +41,7 @@ fun SignUpStep1Screen(
 
     SignupScaffold(
         navController = navController,
-        title = "회원가입"
+        title = "회원가입 (1/3)"
     ) { innerPadding ->
         Box(
             modifier = Modifier.padding(innerPadding)
@@ -112,6 +111,7 @@ fun SignUpStep1Screen(
     }
 }
 
+// 다음 버튼 onClick 메소드
 private fun checkAndNavigateToNext(
     viewModel: SignUpViewModel,
     context: Context,

@@ -25,7 +25,6 @@ fun SignUpStep2Screen(
     navController: NavController,
     viewModel: SignUpViewModel
 ) {
-
     // 전화번호
     var phoneNumber by rememberSaveable { mutableStateOf("") }
     // 입력한 인증번호
@@ -40,7 +39,7 @@ fun SignUpStep2Screen(
 
     SignupScaffold(
         navController = navController,
-        title = "회원가입"
+        title = "회원가입 (2/3)"
     ) { innerPadding ->
         Box(
             modifier = Modifier.padding(innerPadding)
@@ -58,6 +57,7 @@ fun SignUpStep2Screen(
                     )
                 }
             ) {
+                // 전화번호
                 OutlinedTextField(
                     value = phoneNumber,
                     onValueChange = { phoneNumber = it },
@@ -72,6 +72,7 @@ fun SignUpStep2Screen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // 인증번호
                 OutlinedTextField(
                     value = inputAuthCode,
                     onValueChange = { inputAuthCode = it},
@@ -89,6 +90,7 @@ fun SignUpStep2Screen(
     }
 }
 
+// 다음 버튼 onClick 메소드
 private fun checkAndNavigateToNext(
     viewModel: SignUpViewModel,
     context: Context,

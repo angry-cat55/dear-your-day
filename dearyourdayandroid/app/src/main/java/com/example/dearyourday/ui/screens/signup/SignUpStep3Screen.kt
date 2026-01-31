@@ -41,13 +41,14 @@ fun SignUpStep3Screen(
 
     SignupScaffold(
         navController = navController,
-        title = "회원가입"
+        title = "회원가입 (3/3)",
     ) { innerPadding ->
         Box(
             modifier = Modifier.padding(innerPadding)
         ) {
             SignupContentLayout(
                 title = "닉네임을\n입력해주세요.",
+                buttonText = "가입",
                 onButtonClick = {
                     checkAndNavigateToNext(
                         viewModel = viewModel,
@@ -60,6 +61,7 @@ fun SignUpStep3Screen(
                     )
                 }
             ) {
+                // 닉네임
                 OutlinedTextField(
                     value = nickname,
                     onValueChange = { nickname = it },
@@ -93,39 +95,43 @@ fun SignUpStep3Screen(
     }
 }
 
+// 가입 버튼 onClick 메소드
 private fun checkAndNavigateToNext(
     viewModel: SignUpViewModel,
     context: Context,
     navController: NavController,
     nickname: String,
     coroutineScope: CoroutineScope,
-    onLoadingChange: (Boolean) -> Unit // ★ 로딩 상태 변경 콜백 추가
+    onLoadingChange: (Boolean) -> Unit
 ) {
+    // 1. 닉네임 빈 값 체크
     if (nickname.isBlank()) {
         Toast.makeText(context, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
         return
     }
 
+    // 2. 뷰모델에 닉네임 저장
     viewModel.updateNickname(nickname)
 
+    // 3. 코루틴 시작
     coroutineScope.launch {
-        // 1. 로딩 시작! (화면이 어두워짐)
+        // 4. 로딩 시작
         onLoadingChange(true)
 
-        // 2. 서버 통신 (여기서 대기)
+        // 5. 뷰모델 데이터 DB에 저장하는 API 메소드 호출 후 결과 저장
         val response = viewModel.requestSignUp()
 
-        // 3. 로딩 끝! (화면이 다시 밝아짐)
+        // 6. 로딩 끝
         onLoadingChange(false)
 
+        // 7. 저장에 성공할 경우 화면 이동
         if (response.isSuccessful) {
-            // 성공: 완료 화면으로 이동 & 뒤로가기 스택 날리기
             navController.navigate("signup_complete") {
                 popUpTo("login") { inclusive = false }
             }
-        } else {
-            // 실패: 이동 안 함. 토스트만 띄움.
-            // 사용자는 로딩만 걷힌 상태에서 바로 닉네임을 수정할 수 있음 (UX Good!)
+        }
+        // 8. 실패할 경우 토스트로 오류 메세지 띄우기
+        else {
             val errorMsg = try {
                 val errorBody = response.errorBody()?.string()
                 JSONObject(errorBody).getString("message")
