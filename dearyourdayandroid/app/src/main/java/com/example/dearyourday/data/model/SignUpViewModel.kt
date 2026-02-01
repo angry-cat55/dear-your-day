@@ -29,7 +29,16 @@ class SignUpViewModel: ViewModel() {
         _uiState.update { it.copy(nickname = nickname) }
     }
 
-    // 회원가입 메소드
+    // 아이디 중복 체크 메소드
+    suspend fun requestCheckId(loginId: String): Response<Boolean> {
+        // 아이디 중복 확인 후 결과값 저장
+        val response = RetrofitInstance.userApi.checkId(loginId)
+
+        // 결과 반환
+        return response
+    }
+    
+    // 계정 정보 저장 메소드
     suspend fun requestSignUp(): Response<Unit> {
         // 현재 뷰모델에 저장된 SignupRequest 객체 꺼내기
         val data = _uiState.value

@@ -27,18 +27,21 @@ import com.example.dearyourday.data.model.SignUpViewModel
 import com.example.dearyourday.data.model.diary.DiaryResponse
 import com.example.dearyourday.ui.components.SignupContentLayout
 import com.example.dearyourday.ui.components.SignupScaffold
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpStep1Screen(
     navController: NavController,
     viewModel: SignUpViewModel
 ) {
-    // 아이디
+    // 아이디 변수
     var loginId by rememberSaveable { mutableStateOf("") }
-    // 비밀번호
+    // 비밀번호 변수
     var password by rememberSaveable { mutableStateOf("") }
-    // 비밀번호 확인
+    // 비밀번호 확인 변수
     var confirmPassword by rememberSaveable { mutableStateOf("") }
+    // 아이디 중복 확인 여부 확인 변수 (false: 확인 안 한 상태)
+    var isIdChecked by rememberSaveable { mutableStateOf(false) }
 
     // 포커스 제어용 입력창의 변수들
     val idFocusRequester = remember { FocusRequester() }
@@ -68,7 +71,8 @@ fun SignUpStep1Screen(
                         navController = navController,
                         loginId = loginId,
                         password = password,
-                        confirmPassword = confirmPassword
+                        confirmPassword = confirmPassword,
+                        isIdChecked = isIdChecked
                     )
                 }
             ) {
@@ -82,7 +86,11 @@ fun SignUpStep1Screen(
                     // 아이디
                     OutlinedTextField(
                         value = loginId,
-                        onValueChange = { loginId = it },
+                        onValueChange = {
+                            // 아이디 값이 변경될 때마다 아이디 중복 확인 여부 false로 변경
+                            isIdChecked = false
+                            loginId = it
+                        },
                         label = { Text("아이디") },
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
@@ -105,8 +113,38 @@ fun SignUpStep1Screen(
                     // 중복 확인 버튼
                     Button(
                         onClick = {
-                            // TODO: 아이디 중복 확인 로직 실행 (뷰모델 함수 호출 등)
+                            // 아이디 비어있는지 체크
+                            if (loginId.isBlank()) {
+                                Toast.makeText(context, "아이디를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                                return@Button
+                            }
+                            
+                            coroutineScope.launch {
+                                // 아이디 중복 체크 후 결과 저장
+                                val response = viewModel.requestCheckId(loginId)
+                                
+                                // 1. 아이디 중복 확인을 성공할 경우
+                                if (response.isSuccessful) {
+                                    // 중복 확인 결과값 저장 (true: 중복, false: 중복X)
+                                    val isAlreadyExistsId = response.body()
+
+                                    // 중복된 아이디가 있을 경우
+                                    if (isAlreadyExistsId!!) {
+                                        Toast.makeText(context, "이미 사용 중인 아이디입니다.", Toast.LENGTH_SHORT).show()
+                                    }
+                                    // 중복된 아이디가 없을 경우
+                                    else {
+                                        isIdChecked = true;
+                                        Toast.makeText(context, "사용할 수 있는 아이디입니다.", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                // 2. 중복 확인에 실패할 경우
+                                else {
+                                    Toast.makeText(context, "아이디 중복 확인에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         },
+                        enabled = !isIdChecked,
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF6A5AE0)
@@ -182,7 +220,8 @@ private fun checkAndNavigateToNext(
     navController: NavController,
     loginId: String,
     password: String,
-    confirmPassword: String
+    confirmPassword: String,
+    isIdChecked: Boolean
 ) {
     // 1. 빈 값 체크
     if (loginId.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
@@ -202,11 +241,15 @@ private fun checkAndNavigateToNext(
         return
     }
     
-    // TODO: 아이디 중복 확인 체크
+    // 4. 아이디 중복 확인 여부 체크
+    if (!isIdChecked) {
+        Toast.makeText(context, "아이디 중복 확인을 해주세요.", Toast.LENGTH_SHORT).show()
+        return
+    }
 
-    // 4. 모든 검사 통과 -> 뷰모델에 저장
+    // 5. 모든 검사 통과 -> 뷰모델에 저장
     viewModel.updateIdPassword(loginId, password)
 
-    // 5. 다음 화면으로 이동
+    // 6. 다음 화면으로 이동
     navController.navigate("signup_step2")
 }

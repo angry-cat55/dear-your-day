@@ -56,7 +56,6 @@ fun SignUpStep3Screen(
                         navController = navController,
                         nickname = nickname,
                         coroutineScope = coroutineScope,
-                        // ★ 로딩 상태를 바꾸는 함수를 전달
                         onLoadingChange = { isLoading = it }
                     )
                 }

@@ -35,7 +35,7 @@ fun SignUpStep2Screen(
     // 입력한 인증번호
     var inputAuthCode by rememberSaveable { mutableStateOf("") }
     // 발급된 인증번호
-    val authCode by rememberSaveable { mutableStateOf("123456") }
+    val authCode by rememberSaveable { mutableStateOf("123456") } // 하드코딩
 
     // 토스트 전용 메세지 저장 변수
     val context = LocalContext.current
