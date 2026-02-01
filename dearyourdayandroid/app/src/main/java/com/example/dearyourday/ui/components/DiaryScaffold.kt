@@ -87,7 +87,7 @@ fun DiaryScaffold(
                                 val today = java.time.LocalDate.now().toString()
                                 navController.navigate("main_diary/$today") {
                                     popUpTo(0) { inclusive = true }
-                                    launchSingleTop = true
+                                    launchSingleTop = true // 이미 스택 최상단 화면일 경우, 스택 생성없이 재사용
                                 }
                             } else {
                                 navController.navigate(item.route) {

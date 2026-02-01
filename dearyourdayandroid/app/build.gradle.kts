@@ -71,4 +71,7 @@ dependencies {
 
     // 4. 기본 이미지 아이콘
     implementation("androidx.compose.material:material-icons-extended")
+
+    // 5. 캘린더 라이브러리
+    implementation("com.kizitonwose.calendar:compose:2.6.0")
 }
