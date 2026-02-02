@@ -70,7 +70,7 @@ fun DiaryScaffold(
                 // 상단 헤더
                 Spacer(modifier = Modifier.height(24.dp)) // 상단 여백
                 Text(
-                    text = "너의 하루에게.",
+                    text = "너의 하루에게",
                     fontSize = 20.sp,
                     modifier = Modifier.padding(16.dp)
                 )
