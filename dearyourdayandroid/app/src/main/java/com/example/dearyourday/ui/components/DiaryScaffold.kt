@@ -68,13 +68,15 @@ fun DiaryScaffold(
                 drawerContainerColor = Color.White
             ) {
                 // 상단 헤더
-                Spacer(modifier = Modifier.height(24.dp)) // 상단 여백
+                Spacer(modifier = Modifier.height(36.dp)) // 상단 여백
                 Text(
-                    text = "너의 하루에게.",
+                    text = "너의 하루에게",
                     fontSize = 20.sp,
                     modifier = Modifier.padding(16.dp)
                 )
+                Spacer(modifier = Modifier.height(10.dp))
                 HorizontalDivider()
+                Spacer(modifier = Modifier.height(10.dp))
 
                 // 중간 메뉴 목록
                 menuItems.forEach { item ->
@@ -97,6 +99,7 @@ fun DiaryScaffold(
                         },
                         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
+                    Spacer(modifier = Modifier.height(12.dp)) // 버튼 사이 여백
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
