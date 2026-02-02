@@ -2,7 +2,7 @@
 
 > **"오늘의 감정을 기록하면, AI가 따뜻한 공감을 전달합니다."**
 >
-> Google Gemini AI를 활용한 감정 분석 데일리 다이어리 애플리케이션입니다.
+> Google Gemma 3 AI를 활용한 감정 분석 데일리 다이어리 애플리케이션입니다.
 
   
 
@@ -31,14 +31,14 @@
 * **Framework**: Spring Boot 3.5.9
 * **Language**: Java 21
 * **Database**: MySQL, JPA
-* **AI Engine**: Google Gemmer-3-4b
+* **AI Engine**: Google Gemma-3-4b
 
   
 
 ## Key Features
 
 ### 1. AI 공감 코멘트
-* **Google AI API 연동**: 사용자가 작성한 일기 텍스트를 서버로 전송하면, Google Gemmer 3 모델이 문맥과 감정을 심층 분석합니다.
+* **Google AI API 연동**: 사용자가 작성한 일기 텍스트를 서버로 전송하면, Google Gemma 3 모델이 문맥과 감정을 심층 분석합니다.
 * **맞춤형 피드백**: 단순한 요약이 아닌, "오늘 정말 고생 많으셨네요", "그런 일이 있었다니 정말 속상했겠어요"와 같은 **공감 코멘트**를 생성하여 DB에 저장하고 앱에 표시합니다.
 
 ### 2. 데일리 감정 일기
