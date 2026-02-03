@@ -19,9 +19,9 @@ class SignUpViewModel: ViewModel() {
         _uiState.update { it.copy(loginId = loginId, password = password) }
     }
 
-    // 전화번호 갱신
-    fun updatePhoneNumber(phoneNumber: String) {
-        _uiState.update { it.copy(phoneNumber = phoneNumber) }
+    // 이메일 갱신
+    fun updateEmail(email: String) {
+        _uiState.update { it.copy(email = email) }
     }
 
     // 닉네임 갱신

@@ -16,12 +16,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dearyourday.data.model.SignUpViewModel
-import com.example.dearyourday.ui.components.PhoneNumberVisualTransformation
 import com.example.dearyourday.ui.components.SignupContentLayout
 import com.example.dearyourday.ui.components.SignupScaffold
 
@@ -30,8 +30,8 @@ fun SignUpStep2Screen(
     navController: NavController,
     viewModel: SignUpViewModel
 ) {
-    // 전화번호
-    var phoneNumber by rememberSaveable { mutableStateOf("") }
+    // 이메일
+    var email by rememberSaveable { mutableStateOf("") }
     // 입력한 인증번호
     var inputAuthCode by rememberSaveable { mutableStateOf("") }
     // 발급된 인증번호
@@ -39,7 +39,7 @@ fun SignUpStep2Screen(
 
     // 토스트 전용 메세지 저장 변수
     val context = LocalContext.current
-    // suspend 함수 사용을 위한 객체 (전화번호 인증)
+    // suspend 함수 사용을 위한 객체 (이메일 인증)
     val coroutineScope = rememberCoroutineScope()
 
     SignupScaffold(
@@ -50,30 +50,26 @@ fun SignUpStep2Screen(
             modifier = Modifier.padding(innerPadding)
         ) {
             SignupContentLayout(
-                title = "전화번호를\n입력해주세요.",
+                title = "이메일을\n입력해주세요.",
                 onButtonClick = {
                     checkAndNavigateToNext(
                         viewModel = viewModel,
                         context = context,
                         navController = navController,
-                        phoneNumber = phoneNumber,
+                        email = email,
                         inputAuthCode = inputAuthCode,
                         authCode = authCode
                     )
                 }
             ) {
-                // 전화번호
+                // 이메일
                 OutlinedTextField(
-                    value = phoneNumber,
-                    onValueChange = { newValue ->
-                        // 최대 11자리까지 입력 + 숫자만 입력 가능
-                        if (newValue.length <= 11 && newValue.all { it.isDigit() }) {
-                            phoneNumber = newValue
-                        }
-                    },
-                    label = { Text("전화번호") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), // 숫자 키보드 설정
-                    visualTransformation = PhoneNumberVisualTransformation(), // 전화번호 포맷팅
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("이메일") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Done), // 이메일 키보드 설정
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -115,13 +111,13 @@ private fun checkAndNavigateToNext(
     viewModel: SignUpViewModel,
     context: Context,
     navController: NavController,
-    phoneNumber: String,
+    email: String,
     inputAuthCode: String,
     authCode: String
 ) {
-    // 1. 전화번호 빈 값 체크
-    if (phoneNumber.isBlank()) {
-        Toast.makeText(context, "전화번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
+    // 1. 이메일 빈 값 체크
+    if (email.isBlank()) {
+        Toast.makeText(context, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
         return
     }
 
@@ -143,8 +139,8 @@ private fun checkAndNavigateToNext(
         return
     }
 
-    // 5. 모든 검증 통과 -> 뷰모델에 전화번호 저장
-    viewModel.updatePhoneNumber(phoneNumber)
+    // 5. 모든 검증 통과 -> 뷰모델에 이메일 저장
+    viewModel.updateEmail(email)
 
     // 6. 다음 화면으로 이동
     navController.navigate("signup_step3")

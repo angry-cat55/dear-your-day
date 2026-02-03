@@ -17,7 +17,7 @@ data class SignupRequest(
     val loginId: String = "",
     val password: String = "",
     val nickname: String = "",
-    val phoneNumber: String = ""
+    val email: String = ""
 )
 
 // 내 정보 조회 응답
@@ -25,7 +25,7 @@ data class MyInfoResponse(
     val userId: Long,
     val loginId: String,
     val nickname: String,
-    val phoneNumber: String,
+    val email: String,
     val createdAt: String?
 )
 

@@ -27,7 +27,7 @@ public class UserService {
                 .loginId(request.getLoginId())
                 .password(request.getPassword())
                 .nickname(request.getNickname())
-                .phoneNumber(request.getPhoneNumber())
+                .email(request.getEmail())
                 .build();
 
         // 3. 저장소에 저장

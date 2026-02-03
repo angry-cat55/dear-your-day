@@ -13,7 +13,7 @@ public class MyInfoResponse {
     private Long userId; // 내부 식별용 유저 ID
     private String loginId; // 로그인 ID
     private String nickname; // nickname
-    private String phoneNumber; // 휴대폰 번호
+    private String email; // 이메일
     private String createdAt; // 계정 생성 일자
 
     private static String dateFormat(LocalDateTime date) {
@@ -28,7 +28,7 @@ public class MyInfoResponse {
                 .userId(user.getUserId())
                 .loginId(user.getLoginId())
                 .nickname(user.getNickname())
-                .phoneNumber(user.getPhoneNumber())
+                .email(user.getEmail())
                 .createdAt(MyInfoResponse.dateFormat(user.getCreatedAt()))
                 .build();
     }
