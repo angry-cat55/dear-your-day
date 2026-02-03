@@ -13,6 +13,7 @@ import com.example.dearyourday.ui.screens.diary.MainDiaryScreen
 import com.example.dearyourday.ui.screens.diary.MonthlyDiariesScreen
 import com.example.dearyourday.ui.screens.diary.WriteDiaryScreen
 import com.example.dearyourday.ui.screens.login.LoginScreen
+import com.example.dearyourday.ui.screens.login.SplashScreen
 import com.example.dearyourday.ui.screens.signup.SignUpCompleteScreen
 import com.example.dearyourday.ui.screens.signup.SignUpStep1Screen
 import com.example.dearyourday.ui.screens.signup.SignUpStep2Screen
@@ -26,8 +27,12 @@ fun NavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = "splash"
     ) {
+        // --- 로그인 흐름 ---
+        composable("splash") {
+            SplashScreen(navController = navController)
+        }
         composable("login") {
             LoginScreen(navController = navController)
         }

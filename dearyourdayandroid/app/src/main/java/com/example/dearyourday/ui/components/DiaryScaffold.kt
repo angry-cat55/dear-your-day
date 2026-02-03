@@ -26,13 +26,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.dearyourday.data.AutoLoginManager
 import com.example.dearyourday.data.UserSession
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -57,6 +60,10 @@ fun DiaryScaffold(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     // 서랍을 열고 닫을 때 애미메이션을 돌릴 객체
     val scope = rememberCoroutineScope()
+
+    // 자동 로그인 해제를 위한 매니저
+    val context = LocalContext.current
+    val autoLoginManager = remember { AutoLoginManager(context) }
 
     // 1. 전체를 감싸는 레이아웃
     ModalNavigationDrawer(
@@ -119,9 +126,11 @@ fun DiaryScaffold(
                         scope.launch {
                             // 1. 서랍 닫기
                             drawerState.close()
-                            // 2. 세션 정보 초기화
+                            // 2. DataStore의 자동 로그인 정보 삭제
+                            autoLoginManager.clearLoginData()
+                            // 3. 세션 정보 초기화
                             UserSession.clear()
-                            // 3. 로그인 화면으로 이동(스택 초기화)
+                            // 4. 로그인 화면으로 이동(스택 초기화)
                             navController.navigate("login") {
                                 popUpTo(0) { inclusive = true }
                             }
