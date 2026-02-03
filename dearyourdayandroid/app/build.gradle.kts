@@ -74,4 +74,7 @@ dependencies {
 
     // 5. 캘린더 라이브러리
     implementation("com.kizitonwose.calendar:compose:2.6.0")
+
+    // 6. 자동 로그인을 위한 DataStore 라이브러리
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

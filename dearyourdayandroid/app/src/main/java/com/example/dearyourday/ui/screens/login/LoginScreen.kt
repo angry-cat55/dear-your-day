@@ -19,21 +19,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dearyourday.R
+import com.example.dearyourday.data.AutoLoginManager
 import com.example.dearyourday.data.UserSession
 import com.example.dearyourday.data.api.*
 import com.example.dearyourday.data.model.user.*
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
 fun LoginScreen(navController: NavController) {
     // 화면에서 사용할 변수들 (상태)
-    var loginId by rememberSaveable { mutableStateOf("root") }
-    var password by rememberSaveable { mutableStateOf("1234") }
-    val coroutineScope = rememberCoroutineScope()
+    var loginId by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+
+    // 토스트 전용 메세지 저장 변수
     val context = LocalContext.current
-    // TODO: 로컬 스토리지 등을 통해 자동 로그인 로직 변경 (일단 하드코딩)
-    var checked by rememberSaveable { mutableStateOf(false) }
+    // suspend 함수 사용을 위한 객체
+    val coroutineScope = rememberCoroutineScope()
+
+    // 자동 로그인 체크 여부 저장 변수
+    var isAutoLoginChecked by rememberSaveable { mutableStateOf(false) }
+    // 저장소 매니저
+    val autoLoginManager = remember { AutoLoginManager(context) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -101,8 +109,8 @@ fun LoginScreen(navController: NavController) {
                 horizontalArrangement = Arrangement.Start
             ) {
                 Checkbox(
-                    checked = checked,
-                    onCheckedChange = { checked = it }
+                    checked = isAutoLoginChecked,
+                    onCheckedChange = { isAutoLoginChecked = it }
                 )
                 Text("자동 로그인", fontSize = 14.sp)
             }
@@ -129,6 +137,15 @@ fun LoginScreen(navController: NavController) {
                                 // 성공 시 UserSession에 유저 정보 저장
                                 UserSession.userId = result.userId
                                 UserSession.nickname = result.nickname
+
+                                // 자동 로그인 체크박스 활성화 시 DataStore에 정보 저장
+                                if (isAutoLoginChecked) {
+                                    autoLoginManager.saveLoginData(loginId, password)
+                                }
+                                // 자동로그인 체크박스 해제했으면 기존 정보 삭제
+                                else {
+                                    autoLoginManager.clearLoginData()
+                                }
 
                                 // 화면 이동
                                 val today = LocalDate.now().toString();
