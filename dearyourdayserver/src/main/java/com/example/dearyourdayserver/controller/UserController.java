@@ -75,7 +75,7 @@ public class UserController {
         return ResponseEntity.ok("인증번호가 발송되었습니다.");
     }
 
-    // 이메일 인증번호 확인 요청
+    // 이메일 인증번호 확인 요청 API
     @PostMapping("/email/verify")
     public ResponseEntity<Boolean> verifyEmail(@RequestBody EmailVerifyRequest request) {
         // 전달받은 이메일과 인증번호로 일치여부 확인 후 저장
