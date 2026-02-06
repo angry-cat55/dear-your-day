@@ -26,18 +26,18 @@ public class User {
     @Column(nullable = false, length = 30)
     private String nickname;
 
-    @Column(unique = true, length = 20)
-    private String phoneNumber;
+    @Column(unique = true, length = 127)
+    private String email;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public User(String loginId, String password, String nickname, String phoneNumber) {
+    public User(String loginId, String password, String nickname, String email) {
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
-        this.phoneNumber = phoneNumber;
+        this.email = email;
         this.createdAt = LocalDateTime.now();
     }
 

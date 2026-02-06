@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import java.time.LocalDate
 
 @Composable
+// 앱 실행 시 표시되면 로딩 화면 (자동 로그인 시도)
 fun SplashScreen(navController: NavController) {
     // 자동 로그인 해제를 위한 매니저
     val context = LocalContext.current
