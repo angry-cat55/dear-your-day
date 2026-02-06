@@ -68,7 +68,8 @@ public class EmailService {
                                     <div style="max-width: 400px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                     
                                         <div style="text-align: center; margin-bottom: 30px;">
-                                            <img src="%s" alt="너의 하루에게 로고" style="width: 360px; height: auto; display: block; margin: 0 auto;">
+                                            <img src="%s" alt="너의 하루에게 로고"
+                                                style="width: 100%%; max-width: 360px; height: auto; display: block; margin: 0 auto;">
                                             <p style="color: #888; font-size: 14px; margin-top: 10px;">AI 감성 다이어리 파트너</p>
                                         </div>
                     
