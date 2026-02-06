@@ -33,3 +33,14 @@ data class MyInfoResponse(
 data class NicknameUpdateRequest(
     val nickname: String
 )
+
+// 회원가입 이메일 인증번호 요청
+data class SendEmailRequest(
+    val email: String
+)
+
+// 회원가입 이메일 인증번호 검증 응답
+data class VerifyEmailResponse(
+    val email: String,
+    val authCode: String
+)

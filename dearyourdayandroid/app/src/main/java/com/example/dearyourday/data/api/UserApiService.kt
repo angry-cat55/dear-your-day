@@ -35,4 +35,16 @@ interface UserApiService {
         @Path("userId") userId: Long,
         @Body request: NicknameUpdateRequest
     ): Response<String>
+
+    // 이메일 인증번호 요청
+    @POST("/api/users/email/send")
+    suspend fun sendEmail(
+        @Body request: SendEmailRequest
+    ): Response<Unit>
+
+    // 이메일 인증번호 확인
+    @POST("/api/users/email/verify")
+    suspend fun verifyEmail(
+        @Body request: VerifyEmailResponse
+    ): Response<Boolean>
 }
