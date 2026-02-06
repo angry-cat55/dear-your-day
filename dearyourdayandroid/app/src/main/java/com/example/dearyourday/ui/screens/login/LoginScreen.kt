@@ -31,7 +31,6 @@ import com.example.dearyourday.data.AutoLoginManager
 import com.example.dearyourday.data.UserSession
 import com.example.dearyourday.data.api.*
 import com.example.dearyourday.data.model.user.*
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 

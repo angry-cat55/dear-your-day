@@ -1,6 +1,7 @@
 package com.example.dearyourdayserver.controller;
 
 import com.example.dearyourdayserver.dto.user.*;
+import com.example.dearyourdayserver.service.EmailService;
 import com.example.dearyourdayserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final EmailService emailService;
 
     // 회원가입 API
     @PostMapping("/signup")
@@ -62,4 +64,25 @@ public class UserController {
         // 성공하면 "200 OK" 상태코드와 함께 새 닉네임 String 전달
         return ResponseEntity.ok(newNickname);
     }
+
+    // 이메일 인증번호 요청 API
+    @PostMapping("/email/send")
+    public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
+        // 화면에서 전달된 이메일로 인증번호 발송
+        emailService.sendEmail(request.getEmail());
+
+        // 성공하면 "200 OK" 상태코드와 함께 문자열 전달
+        return ResponseEntity.ok("인증번호가 발송되었습니다.");
+    }
+
+    // 이메일 인증번호 확인 요청
+    @PostMapping("/email/verify")
+    public ResponseEntity<Boolean> verifyEmail(@RequestBody EmailVerifyRequest request) {
+        // 전달받은 이메일과 인증번호로 일치여부 확인 후 저장
+        boolean isVerified = emailService.verifyEmailCode(request.getEmail(), request.getAuthCode());
+
+        // 확인 성공하면 "200 OK" 상태코드와 함께 일치여부 반환
+        return ResponseEntity.ok(isVerified);
+    }
+
 }
