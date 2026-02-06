@@ -71,8 +71,8 @@ public class UserController {
         // 화면에서 전달된 이메일로 인증번호 발송
         emailService.sendEmail(request.getEmail());
 
-        // 성공하면 "200 OK" 상태코드와 함께 문자열 전달
-        return ResponseEntity.ok("인증번호가 발송되었습니다.");
+        // 성공하면 "204 No Content" 상태코드 전달
+        return ResponseEntity.noContent().build();
     }
 
     // 이메일 인증번호 확인 요청 API
