@@ -23,12 +23,6 @@ interface UserApiService {
         @Body request: LoginRequest
     ): Response<LoginResponse>
 
-    // 내 정보 조회
-    @GET("/api/users/{userId}")
-    suspend fun getInfoById(
-        @Path("userId") userId: Long
-    ): Response<MyInfoResponse>
-
     // 닉네임 수정
     @PATCH("/api/users/{userId}/nickname")
     suspend fun updateNickname(
