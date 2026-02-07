@@ -44,15 +44,6 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // 내 정보 조회 API
-    @GetMapping("/{userId}") // url로 유저 ID 전달
-    public ResponseEntity<MyInfoResponse> getInfoById(@PathVariable Long userId) {
-        MyInfoResponse response = userService.getInfoById(userId); // 전달받은 유저 ID로 유저 정보 반환
-
-        // 성공하면 "200 OK" 상태코드와 함께 비밀번호를 제외한 모든 유저 정보 DTO 전달
-        return ResponseEntity.ok(response);
-    }
-
     // 닉네임 수정 API
     @PatchMapping("/{userId}/nickname") // url로 유저 ID 전달
     public ResponseEntity<String> updateNickname(

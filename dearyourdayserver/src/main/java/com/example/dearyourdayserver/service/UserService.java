@@ -55,17 +55,6 @@ public class UserService {
         return LoginResponse.from(user);
     }
 
-    // 정보 조회 기능
-    @Transactional(readOnly = true)
-    public MyInfoResponse getInfoById(Long userId) {
-        // 1. 유저 ID로 정보 반환
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("정보를 조회할 수 없습니다."));
-
-        // 2. DTO 반환
-        return MyInfoResponse.from(user);
-    }
-
     @Transactional // 필드 변경 시 자동으로 UPDATE 쿼리 전송
     // 닉네임 수정 기능
     public void updateNickname(Long userId, String newNickname) {
