@@ -58,7 +58,7 @@ fun DiaryScaffold(
 ) {
     // 서랍이 열렸는지 닫혔는지 기억하는 변수
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    // 서랍을 열고 닫을 때 애미메이션을 돌릴 객체
+    // 서랍을 열고 닫을 때 애니메이션을 돌릴 객체
     val scope = rememberCoroutineScope()
 
     // 자동 로그인 해제를 위한 매니저
