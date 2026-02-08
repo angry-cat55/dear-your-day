@@ -22,15 +22,18 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.dearyourday.data.AutoLoginManager
 import com.example.dearyourday.data.UserSession
 import com.example.dearyourday.data.api.RetrofitInstance
+import com.example.dearyourday.data.model.user.DeleteAccountRequest
 import com.example.dearyourday.data.model.user.NicknameUpdateRequest
 import com.example.dearyourday.ui.components.DiaryScaffold
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 @Composable
 fun UserScreen(
@@ -49,6 +52,11 @@ fun UserScreen(
     val coroutineScope = rememberCoroutineScope()
     // 수정된 닉네임 DataStore에 저장하기 위한 매니저
     val autoLoginManager = remember { AutoLoginManager(context) }
+
+    // 팝업 표시 여부
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    // 비밀번호 입력값
+    var passwordInput by remember { mutableStateOf("") }
 
 
     DiaryScaffold(
@@ -185,9 +193,111 @@ fun UserScreen(
                 color = Color.Gray,
                 fontSize = 14.sp,
                 modifier = Modifier.clickable {
-                    // TODO: 탈퇴 로직 구현
+                    // 비밀번호 입력 팝업 띄우기
+                    showDeleteDialog = true
+                    passwordInput = "" // 팝업 열 때마다 비밀번호 초기화
                 }
             )
+
+            // 탈퇴 전 비밀번호 확인 다이얼로그
+            if (showDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showDeleteDialog = false // 배경 터치 시 닫기
+                    },
+                    title = {
+                        Text(text = "회원 탈퇴", fontWeight = FontWeight.Bold)
+                    },
+                    text = {
+                        Column {
+                            Text(
+                                text = "정말 탈퇴하시겠습니까?\n본인 확인을 위해 비밀번호를 입력해주세요.",
+                                fontSize = 14.sp,
+                                color = Color.Gray
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // 비밀번호 입력창
+                            OutlinedTextField(
+                                value = passwordInput,
+                                onValueChange = { passwordInput = it },
+                                label = { Text("비밀번호") },
+                                singleLine = true,
+                                visualTransformation = PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                // 비밀번호 입력칸이 빈킨일 경우
+                                if (passwordInput.isBlank()) {
+                                    Toast.makeText(context, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+                                coroutineScope.launch {
+                                    try {
+                                        // 계정 삭제 API 호출
+                                        val response = RetrofitInstance.userApi.deleteAccount(
+                                            request = DeleteAccountRequest(
+                                                userId = UserSession.userId,
+                                                password = passwordInput
+                                            )
+                                        )
+                                        // 탈퇴에 성공한 경우
+                                        if (response.isSuccessful) {
+                                            Toast.makeText(context, "계정을 탈퇴했습니다.", Toast.LENGTH_SHORT).show()
+
+                                            // DataStore와 UserSession 클리어
+                                            autoLoginManager.clearLoginData()
+                                            UserSession.clear()
+
+                                            // 로그인 화면으로 이동
+                                            navController.navigate("login") {
+                                                popUpTo(0) { inclusive = true }
+                                            }
+                                        }
+                                        // 탈퇴에 실패한 경우 (비밀번호 불일치)
+                                        else {
+                                            // 서버가 보낸 에러 메시지를 꺼내기
+                                            val errorJson = response.errorBody()?.string()
+
+                                            // JSON 파싱해서 메시지만  뽑기
+                                            val message = try {
+                                                JSONObject(errorJson).getString("message")
+                                            } catch (e: Exception) {
+                                                "알 수 없는 오류가 발생했습니다."
+                                            }
+                                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                    // 서버 에러 발생
+                                    catch(e: Exception) {
+                                        Toast.makeText(context, "에러 발생: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                    
+                                    // 다이얼로그 닫기
+                                    showDeleteDialog = false
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                        ) {
+                            Text("탈퇴하기")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { showDeleteDialog = false }
+                        ) {
+                            Text("취소", color = Color.Gray)
+                        }
+                    },
+                    containerColor = Color.White
+                )
+            }
 
             Spacer(modifier = Modifier.height(60.dp))
         }

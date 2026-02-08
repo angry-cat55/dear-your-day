@@ -38,3 +38,9 @@ data class VerifyEmailResponse(
     val email: String,
     val authCode: String
 )
+
+// 계정 탈퇴 요청
+data class DeleteAccountRequest(
+    val userId: Long,
+    val password: String
+)

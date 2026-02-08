@@ -41,4 +41,10 @@ interface UserApiService {
     suspend fun verifyEmail(
         @Body request: VerifyEmailResponse
     ): Response<Boolean>
+
+    // 계정 탈퇴 요청
+    @POST("/api/users/delete")
+    suspend fun deleteAccount(
+        @Body request: DeleteAccountRequest
+    ): Response<Unit>
 }

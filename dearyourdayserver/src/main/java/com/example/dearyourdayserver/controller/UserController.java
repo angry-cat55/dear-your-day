@@ -75,4 +75,14 @@ public class UserController {
         // 확인 성공하면 "200 OK" 상태코드와 함께 일치여부 반환
         return ResponseEntity.ok(isVerified);
     }
+
+    // 계정 탈퇴 요청 API
+    @PostMapping("/delete")
+    public ResponseEntity<Void> deleteAccount(@RequestBody DeleteAccountRequest request) {
+        // 전달받은 유저 ID와 비밀번호로 계정 확인 후 삭제
+        userService.deleteAccount(request.getUserId(), request.getPassword());
+
+        // 삭제 성공하면 "204 No Content" 상태코드 반환
+        return ResponseEntity.noContent().build();
+    }
 }

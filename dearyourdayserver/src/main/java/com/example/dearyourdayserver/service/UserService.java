@@ -65,4 +65,19 @@ public class UserService {
         // 2. user Entity의 updateNickname 함수에 새 닉네임 전달
         user.updateNickname(newNickname);
     }
+
+    // 계정 삭제 기능
+    @Transactional
+    public void deleteAccount(Long userId, String password) {
+        // 1. 유저와 비밀번호 일치 확인 (true: 일치하는 비밀번호)
+        Boolean isCorrect = userRepository.existsByUserIdAndPassword(userId, password);
+
+        // 2. 일치하지 않는 비밀번호일 경우 삭제 X
+        if (!isCorrect) {
+            throw new IllegalArgumentException("입력한 비밀번호가 삭제할 계정의 비밀번호와 일치하지 않습니다.");
+        }
+
+        // 3. 계정 삭제
+        userRepository.deleteById(userId);
+    }
 }
