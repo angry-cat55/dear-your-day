@@ -2,6 +2,7 @@ package com.example.dearyourday.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -15,13 +16,28 @@ class AutoLoginManager(private val context: Context) {
     companion object {
         private val KEY_LOGIN_ID = stringPreferencesKey("login_id")
         private val KEY_PASSWORD = stringPreferencesKey("password")
+        private val KEY_USER_ID = longPreferencesKey("user_id")
+        private val KEY_NICKNAME = stringPreferencesKey("nickname")
+        private val KEY_EMAIL = stringPreferencesKey("email")
+        private val KEY_CREATED_AT = stringPreferencesKey("created_at")
     }
 
     // 저장하기 - 로그인 성공 시 호출
-    suspend fun saveLoginData(loginId: String, password: String) {
+    suspend fun saveLoginData(
+        userId: Long,
+        nickname: String,
+        loginId: String,
+        password: String,
+        email: String,
+        createdAt: String
+    ) {
         context.dataStore.edit { preferences ->
+            preferences[KEY_USER_ID] = userId
+            preferences[KEY_NICKNAME] = nickname
             preferences[KEY_LOGIN_ID] = loginId
             preferences[KEY_PASSWORD] = password
+            preferences[KEY_EMAIL] = email
+            preferences[KEY_CREATED_AT] = createdAt
         }
     }
 
@@ -32,17 +48,24 @@ class AutoLoginManager(private val context: Context) {
             val password = preferences[KEY_PASSWORD]
 
             if (loginId != null && password != null) {
-                Pair(loginId, password) // 둘 다 있으면 반환
+                // 아이디랑 비번 둘 다 있으면 반환
+                Pair(loginId, password)
             } else {
-                null // 없으면 null
+                null
             }
         }
+
+    // 닉네임 변경
+    suspend fun updateNickname(newNickname: String) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_NICKNAME] = newNickname
+        }
+    }
 
     // 삭제하기 - 로그아웃 시 호출
     suspend fun clearLoginData() {
         context.dataStore.edit { preferences ->
-            preferences.remove(KEY_LOGIN_ID)
-            preferences.remove(KEY_PASSWORD)
+            preferences.clear()
         }
     }
 }

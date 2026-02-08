@@ -23,6 +23,7 @@ import com.example.dearyourday.data.AutoLoginManager
 import com.example.dearyourday.data.UserSession
 import com.example.dearyourday.data.api.RetrofitInstance
 import com.example.dearyourday.data.model.user.LoginRequest
+import com.example.dearyourday.ui.screens.user.UserScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import java.time.LocalDate
@@ -55,6 +56,9 @@ fun SplashScreen(navController: NavController) {
                 if (response.isSuccessful && result != null) {
                     UserSession.userId = result.userId
                     UserSession.nickname = result.nickname
+                    UserSession.loginId = result.loginId
+                    UserSession.email = result.email
+                    UserSession.createdAt = result.createdAt
                     loginSuccess = true
                 }
             }

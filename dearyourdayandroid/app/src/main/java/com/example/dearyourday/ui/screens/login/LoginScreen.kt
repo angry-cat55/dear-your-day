@@ -31,6 +31,7 @@ import com.example.dearyourday.data.AutoLoginManager
 import com.example.dearyourday.data.UserSession
 import com.example.dearyourday.data.api.*
 import com.example.dearyourday.data.model.user.*
+import com.example.dearyourday.ui.screens.user.UserScreen
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -165,10 +166,15 @@ fun LoginScreen(navController: NavController) {
                                 // 성공 시 UserSession에 유저 정보 저장
                                 UserSession.userId = result.userId
                                 UserSession.nickname = result.nickname
+                                UserSession.loginId = result.loginId
+                                UserSession.email = result.email
+                                UserSession.createdAt = result.createdAt
 
                                 // 자동 로그인 체크박스 활성화 시 DataStore에 정보 저장
                                 if (isAutoLoginChecked) {
-                                    autoLoginManager.saveLoginData(loginId, password)
+                                    autoLoginManager.saveLoginData(
+                                        result.userId, result.nickname, loginId, password, result.email, result.createdAt
+                                    )
                                 }
                                 // 자동로그인 체크박스 해제했으면 기존 정보 삭제
                                 else {

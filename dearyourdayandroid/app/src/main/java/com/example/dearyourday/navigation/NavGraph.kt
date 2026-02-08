@@ -18,6 +18,7 @@ import com.example.dearyourday.ui.screens.signup.SignUpCompleteScreen
 import com.example.dearyourday.ui.screens.signup.SignUpStep1Screen
 import com.example.dearyourday.ui.screens.signup.SignUpStep2Screen
 import com.example.dearyourday.ui.screens.signup.SignUpStep3Screen
+import com.example.dearyourday.ui.screens.user.UserScreen
 import java.time.LocalDate
 
 @Composable
@@ -84,6 +85,11 @@ fun NavGraph(navController: NavHostController) {
         }
         composable("diary_summary") {
             DiarySummaryScreen(navController = navController)
+        }
+
+        // --- 유저 화면 흐름 ---
+        composable("user") {
+            UserScreen(navController = navController)
         }
     }
 }

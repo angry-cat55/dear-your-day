@@ -18,7 +18,7 @@ public class UserController {
 
     // 회원가입 API
     @PostMapping("/signup")
-    public ResponseEntity<Long> signup(@RequestBody SignupRequest request) { // 화면 정보를 DTO로 매칭시켜 저장
+    public ResponseEntity<Void> signup(@RequestBody SignupRequest request) { // 화면 정보를 DTO로 매칭시켜 저장
         userService.signup(request); // 서비스 호출해서 DB에 데이터 생성
 
         // 성공하면 "204 No Content" 상태코드 전달
@@ -44,15 +44,6 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // 내 정보 조회 API
-    @GetMapping("/{userId}") // url로 유저 ID 전달
-    public ResponseEntity<MyInfoResponse> getInfoById(@PathVariable Long userId) {
-        MyInfoResponse response = userService.getInfoById(userId); // 전달받은 유저 ID로 유저 정보 반환
-
-        // 성공하면 "200 OK" 상태코드와 함께 비밀번호를 제외한 모든 유저 정보 DTO 전달
-        return ResponseEntity.ok(response);
-    }
-
     // 닉네임 수정 API
     @PatchMapping("/{userId}/nickname") // url로 유저 ID 전달
     public ResponseEntity<String> updateNickname(
@@ -67,7 +58,7 @@ public class UserController {
 
     // 이메일 인증번호 요청 API
     @PostMapping("/email/send")
-    public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
+    public ResponseEntity<Void> sendEmail(@RequestBody EmailRequest request) {
         // 화면에서 전달된 이메일로 인증번호 발송
         emailService.sendEmail(request.getEmail());
 
@@ -85,4 +76,13 @@ public class UserController {
         return ResponseEntity.ok(isVerified);
     }
 
+    // 계정 탈퇴 요청 API
+    @PostMapping("/delete")
+    public ResponseEntity<Void> deleteAccount(@RequestBody DeleteAccountRequest request) {
+        // 전달받은 유저 ID와 비밀번호로 계정 확인 후 삭제
+        userService.deleteAccount(request.getUserId(), request.getPassword());
+
+        // 삭제 성공하면 "204 No Content" 상태코드 반환
+        return ResponseEntity.noContent().build();
+    }
 }

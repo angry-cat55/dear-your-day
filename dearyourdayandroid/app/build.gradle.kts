@@ -77,4 +77,7 @@ dependencies {
 
     // 6. 자동 로그인을 위한 DataStore 라이브러리
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // 7. Retrofit이 JSON 형태가 아닌 String도 받을 수 있도록 하는 라이브러리
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 }

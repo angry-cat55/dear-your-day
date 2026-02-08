@@ -10,6 +10,9 @@ data class LoginRequest(
 data class LoginResponse(
     val userId: Long,
     val nickname: String,
+    val loginId: String,
+    val email: String,
+    val createdAt: String
 )
 
 // 회원가입 요청
@@ -18,15 +21,6 @@ data class SignupRequest(
     val password: String = "",
     val nickname: String = "",
     val email: String = ""
-)
-
-// 내 정보 조회 응답
-data class MyInfoResponse(
-    val userId: Long,
-    val loginId: String,
-    val nickname: String,
-    val email: String,
-    val createdAt: String?
 )
 
 // 닉네임 변경 요청
@@ -43,4 +37,10 @@ data class SendEmailRequest(
 data class VerifyEmailResponse(
     val email: String,
     val authCode: String
+)
+
+// 계정 탈퇴 요청
+data class DeleteAccountRequest(
+    val userId: Long,
+    val password: String
 )
