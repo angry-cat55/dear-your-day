@@ -94,7 +94,7 @@ public class AiSummaryService {
 
         // 1. 일기 내용을 AI가 이해할 수 있게 날짜 + 내용 포맷팅
         List<String> diaryContents = diaries.stream()
-                .map(d -> String.format("[%s] %s", d.getWrittenDate(), d.getContent()))
+                .map(d -> String.format("[%s] %s, ", d.getWrittenDate(), d.getContent()))
                 .toList();
 
         // 2. GeminiService 호출해서 종합 공감 코멘트 반환
