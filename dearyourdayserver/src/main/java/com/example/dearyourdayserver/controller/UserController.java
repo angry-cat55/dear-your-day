@@ -18,7 +18,7 @@ public class UserController {
 
     // 회원가입 API
     @PostMapping("/signup")
-    public ResponseEntity<Long> signup(@RequestBody SignupRequest request) { // 화면 정보를 DTO로 매칭시켜 저장
+    public ResponseEntity<Void> signup(@RequestBody SignupRequest request) { // 화면 정보를 DTO로 매칭시켜 저장
         userService.signup(request); // 서비스 호출해서 DB에 데이터 생성
 
         // 성공하면 "204 No Content" 상태코드 전달
@@ -58,7 +58,7 @@ public class UserController {
 
     // 이메일 인증번호 요청 API
     @PostMapping("/email/send")
-    public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
+    public ResponseEntity<Void> sendEmail(@RequestBody EmailRequest request) {
         // 화면에서 전달된 이메일로 인증번호 발송
         emailService.sendEmail(request.getEmail());
 
@@ -75,5 +75,4 @@ public class UserController {
         // 확인 성공하면 "200 OK" 상태코드와 함께 일치여부 반환
         return ResponseEntity.ok(isVerified);
     }
-
 }
