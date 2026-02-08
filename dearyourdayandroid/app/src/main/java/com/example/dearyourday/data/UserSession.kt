@@ -7,7 +7,6 @@ object UserSession {
     var email: String = ""
     var createdAt: String = ""
 
-
     fun clear() {
         userId = -1L
         nickname = ""

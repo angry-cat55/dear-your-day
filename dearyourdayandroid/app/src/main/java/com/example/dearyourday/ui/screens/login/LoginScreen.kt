@@ -172,7 +172,9 @@ fun LoginScreen(navController: NavController) {
 
                                 // 자동 로그인 체크박스 활성화 시 DataStore에 정보 저장
                                 if (isAutoLoginChecked) {
-                                    autoLoginManager.saveLoginData(loginId, password)
+                                    autoLoginManager.saveLoginData(
+                                        result.userId, result.nickname, loginId, password, result.email, result.createdAt
+                                    )
                                 }
                                 // 자동로그인 체크박스 해제했으면 기존 정보 삭제
                                 else {
