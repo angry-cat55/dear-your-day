@@ -46,7 +46,8 @@ data class DrawerMenuItem(val title: String, val route: String)
 val menuItems = listOf(
     DrawerMenuItem("오늘의 하루", "main_diary"),
     DrawerMenuItem("하루 보관함", "monthly_diaries"),
-    DrawerMenuItem("지금의 나", "diary_summary")
+    DrawerMenuItem("지금의 나", "diary_summary"),
+    DrawerMenuItem("내 계정", "user")
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

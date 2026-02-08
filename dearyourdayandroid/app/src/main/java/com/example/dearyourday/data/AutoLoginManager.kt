@@ -55,6 +55,13 @@ class AutoLoginManager(private val context: Context) {
             }
         }
 
+    // 닉네임 변경
+    suspend fun updateNickname(newNickname: String) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_NICKNAME] = newNickname
+        }
+    }
+
     // 삭제하기 - 로그아웃 시 호출
     suspend fun clearLoginData() {
         context.dataStore.edit { preferences ->
