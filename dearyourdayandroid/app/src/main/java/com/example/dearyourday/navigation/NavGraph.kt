@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.dearyourday.data.model.SignUpViewModel
 import com.example.dearyourday.ui.screens.diary.DiarySummaryScreen
@@ -13,7 +14,6 @@ import com.example.dearyourday.ui.screens.diary.MainDiaryScreen
 import com.example.dearyourday.ui.screens.diary.MonthlyDiariesScreen
 import com.example.dearyourday.ui.screens.diary.WriteDiaryScreen
 import com.example.dearyourday.ui.screens.login.LoginScreen
-import com.example.dearyourday.ui.screens.login.SplashScreen
 import com.example.dearyourday.ui.screens.signup.SignUpCompleteScreen
 import com.example.dearyourday.ui.screens.signup.SignUpStep1Screen
 import com.example.dearyourday.ui.screens.signup.SignUpStep2Screen
@@ -22,18 +22,18 @@ import com.example.dearyourday.ui.screens.user.UserScreen
 import java.time.LocalDate
 
 @Composable
-fun NavGraph(navController: NavHostController) {
+fun NavGraph(
+    navController: NavHostController = rememberNavController(),
+    startDestination: String // MainActivuty에서 전달받은 시작 화면
+) {
     val today = LocalDate.now().toString()
     val signUpViewModel: SignUpViewModel = viewModel()
 
     NavHost(
         navController = navController,
-        startDestination = "splash"
+        startDestination = startDestination
     ) {
         // --- 로그인 흐름 ---
-        composable("splash") {
-            SplashScreen(navController = navController)
-        }
         composable("login") {
             LoginScreen(navController = navController)
         }

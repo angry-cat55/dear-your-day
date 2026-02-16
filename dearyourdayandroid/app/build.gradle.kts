@@ -80,4 +80,7 @@ dependencies {
 
     // 7. Retrofit이 JSON 형태가 아닌 String도 받을 수 있도록 하는 라이브러리
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+
+    // 8. 안드로이드 공식 스플래쉬 화면 라이브러리
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }
