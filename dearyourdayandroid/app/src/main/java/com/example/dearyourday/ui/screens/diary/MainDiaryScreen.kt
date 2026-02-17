@@ -132,6 +132,7 @@ fun MainDiaryScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -331,7 +332,6 @@ fun MainDiaryScreen(
                         // AI 코멘트 내용
                         Box(
                             modifier = Modifier
-                                .weight(1f) // 남는 공간 전부
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(4.dp)) // 내용 + 스크롤 영역 자르기
                                 .border(
@@ -345,7 +345,6 @@ fun MainDiaryScreen(
                                 fontSize = 16.sp,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .verticalScroll(rememberScrollState())
                                     .padding(16.dp)
                             )
                         }
