@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
                     val response = RetrofitInstance.userApi.login(LoginRequest(savedId, savedPw))
                     val result = response.body()
 
+                    // 자동 로그인 정보를 가져왔을 경우
                     if (response.isSuccessful && result != null) {
                         UserSession.userId = result.userId
                         UserSession.nickname = result.nickname
