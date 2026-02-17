@@ -3,6 +3,8 @@ package com.example.dearyourday.ui.screens.diary
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -86,6 +88,7 @@ fun WriteDiaryScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -139,56 +142,69 @@ fun WriteDiaryScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center, // 가운데 정렬
-                verticalArrangement = Arrangement.spacedBy(8.dp)    // 위아래 간격
-            ) {
-                // Mood Enum을 하나씩 돌면서 칩 생성
-                Mood.values().forEach { mood ->
-                    FilterChip(
-                        selected = (moodCode == mood.name), // 현재 선택된 것인지 확인
-                        onClick = { moodCode = mood.name },
-                        label = {
-                            Text(
-                                text = mood.description, // 이모지 설명
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(end = 4.dp),
-                                textAlign = TextAlign.Center
-                            )
-                        },
-                        leadingIcon = {
-                            Text(
-                                text = mood.emoji, // 이모지 아이콘
-                                modifier = Modifier.padding(start = 6.dp)
-                            )
-                        },
-                        colors = FilterChipDefaults.filterChipColors(
-                            // 선택된 버튼 색 지정
-                            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            // 기본 버튼 색 지정
-                            containerColor = MaterialTheme.colorScheme.surface,
-                            labelColor = MaterialTheme.colorScheme.onSurface
-                        ),
-                        border = FilterChipDefaults.filterChipBorder(
-                            selected = (moodCode == mood.name),      // 현재 선택 여부
-                            enabled = true,
-                            borderColor = MaterialTheme.colorScheme.primary, // 테두리 색
-                            borderWidth = 1.dp, // 테두리 두께
-                            selectedBorderColor = MaterialTheme.colorScheme.primary, // 선택 시 테두리 색
-                            selectedBorderWidth = 1.dp // 선택 테두리 두께
-                        ),
-                        modifier = Modifier
-                            .width(180.dp)
-                            .height(35.dp)
-                            .padding(horizontal = 6.dp)
-                    )
+            // Mood Enum을 2개씩 묶어서 줄 생성
+            val chunkedMoods = Mood.values().toList().chunked(2)
+            chunkedMoods.forEachIndexed { index, rowMoods ->
+                // 마지막 줄이면서 아이템이 1개인 경우인지 확인
+                val isLastSingleItem = (index == chunkedMoods.lastIndex && rowMoods.size == 1)
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    // 아이템이 하나면 가운데 정렬, 두 개면 양옆으로 벌림
+                    horizontalArrangement = if (isLastSingleItem) Arrangement.Center else Arrangement.spacedBy(8.dp)
+                ) {
+                    // 묶인 Mood를 하나씩 돌면서 칩 생성
+                    rowMoods.forEach { mood ->
+                        FilterChip(
+                            selected = (moodCode == mood.name), // 현재 선택된 것인지 확인
+                            onClick = { moodCode = mood.name },
+                            label = {
+                                Text(
+                                    text = mood.description, // 이모지 설명
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(end = 4.dp),
+                                    textAlign = TextAlign.Center
+                                )
+                            },
+                            leadingIcon = {
+                                Text(
+                                    text = mood.emoji, // 이모지 아이콘
+                                    modifier = Modifier.padding(start = 6.dp)
+                                )
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                // 선택된 버튼 색 지정
+                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                // 기본 버튼 색 지정
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                labelColor = MaterialTheme.colorScheme.onSurface
+                            ),
+                            border = FilterChipDefaults.filterChipBorder(
+                                selected = (moodCode == mood.name),      // 현재 선택 여부
+                                enabled = true,
+                                borderColor = MaterialTheme.colorScheme.primary, // 테두리 색
+                                borderWidth = 1.dp, // 테두리 두께
+                                selectedBorderColor = MaterialTheme.colorScheme.primary, // 선택 시 테두리 색
+                                selectedBorderWidth = 1.dp // 선택 테두리 두께
+                            ),
+                            modifier = Modifier
+                                .height(35.dp)
+                                .let {
+                                    // 마지막 혼자 남은 버튼이 아니면 weight(1f) 적용
+                                    if (!isLastSingleItem) it.weight(1f) else it.width(180.dp) // 혼자일 땐 고정 크기 또는 wrapContentWidth()
+                                }
+                        )
+                    }
+                }
+                // 줄 바꿈 간격 추가 (마지막 줄 제외)
+                if (index < chunkedMoods.lastIndex) {
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(34.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
