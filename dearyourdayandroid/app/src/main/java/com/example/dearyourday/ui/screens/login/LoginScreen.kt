@@ -89,6 +89,7 @@ fun LoginScreen(navController: NavController) {
                 value = loginId,
                 onValueChange = { loginId = it },
                 label = { Text("아이디") },
+                singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF6A5AE0),
@@ -111,6 +112,7 @@ fun LoginScreen(navController: NavController) {
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("비밀번호") },
+                singleLine = true,
                 visualTransformation = PasswordVisualTransformation(), // 비밀번호 가리기
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
