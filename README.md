@@ -10,7 +10,7 @@
 **Dear Your Day**는 단순한 기록을 넘어, 사용자의 **감정을 공감해주는 AI 다이어리 친구 서비스**입니다.
 사용자가 하루의 일과와 기분을 기록하면, **AI**가 내용을 분석하여 상황에 맞는 위로와 격려, 혹은 축하의 코멘트를 남겨줍니다. **누군가 내 하루를 들어주길 바라는 마음**을 기술로 구현했습니다.
 
-* **개발 기간**: 2026.01.02 ~ 2026.03.01 (v1.0.0 배포 완료)
+* **개발 기간**: 2026.01.02 ~ 2026.02.25 (v1.0.0 배포 완료)
 * **개발 인원**: 1인 (Android & Backend Full-stack)
 * **핵심 가치**: 
     1. **Empathy (공감)**: AI를 통한 정서적 지지 제공
@@ -87,6 +87,35 @@ v1.0.0 배포 후 실제 타겟 사용자들을 대상으로 테스트를 진행
 **3. AI 모델 고도화 (AI Enhancements)**
 * AI의 응답이 다소 보편적이라는 피드백을 수용하여, 프롬프트 엔지니어링을 통해 답변의 구체성과 개인화 수준을 높일 예정입니다.
 * 사용자가 AI에게 이름을 붙여주고 친밀감을 형성할 수 있도록 'AI 페르소나 설정' 기능을 DB와 연동하여 기획 중입니다.
+
+---
+
+## 📄 Documents
+프로젝트의 전체적인 기획 의도와 상세한 설계 내역은 아래 통합 문서에서 확인하실 수 있습니다.
+
+**[🔗 [너의 하루에게] 프로젝트 기획 및 설계서 보기](docs/project-planning-and-design-document.pdf)**
+  * 주제 선정 및 핵심 기능 정리
+  * 요구사항 정의
+  * 화면 흐름도 및 UI 스케치
+  * DB, REST API, UI 구조 설계서
+
+<br>
+
+**핵심 설계 이미지** (클릭하여 펼쳐보기)
+
+<details>
+<summary><b>🗄️ 데이터베이스 ERD</b></summary>
+<div markdown="1">
+<img width="724" height="700" alt="ERD" src="https://github.com/user-attachments/assets/cc3d40b5-f849-4d9f-8790-1229c84405a1" />
+</div>
+</details>
+
+<details>
+<summary><b>🗓️ 프로젝트 커리큘럼</b></summary>
+<div markdown="1">
+<img width="1223" height="464" alt="프로젝트 커리큘럼" src="https://github.com/user-attachments/assets/f55d97da-e56e-4cc7-9673-ce60b681abe1" />
+</div>
+</details>
 
 ---
 
