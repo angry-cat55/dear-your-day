@@ -39,7 +39,7 @@
 
 | 일기 작성 | 작성한 일기 및 AI 코멘트 | 일기 캘린더 | 종합 공감 |
 | :---: | :---: | :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/e2492ea9-b5b6-43c0-91b4-3106dbdea51b" width="150"/> | <img src="https://github.com/user-attachments/assets/68c40285-ad85-4065-8393-79244784c4e2" width="150"/> | <img src="https://github.com/user-attachments/assets/e28b5e80-01e3-4243-b1a8-c468e5251df1" width="150"/> | <img src="https://github.com/user-attachments/assets/99840ac2-efc7-4ead-a844-567de2f878c9" width="150"/><img src="https://github.com/user-attachments/assets/19b7f232-edaa-4fcb-8ed1-119ee2f9dd8b" width="150"/> |
+| <img src="https://github.com/user-attachments/assets/e2492ea9-b5b6-43c0-91b4-3106dbdea51b" width="120"/> | <img src="https://github.com/user-attachments/assets/68c40285-ad85-4065-8393-79244784c4e2" width="120"/> | <img src="https://github.com/user-attachments/assets/e28b5e80-01e3-4243-b1a8-c468e5251df1" width="120"/> | <img src="https://github.com/user-attachments/assets/99840ac2-efc7-4ead-a844-567de2f878c9" width="120"/><img src="https://github.com/user-attachments/assets/19b7f232-edaa-4fcb-8ed1-119ee2f9dd8b" width="120"/> |
 | 선택한 날짜에 대한 기분과 일기 작성을 할 수 있습니다. | 작성한 일기에 대해 AI가 공감 코멘트를 남깁니다.  | 그동안 작성한 일기들을 확인할 수 있습니다. | AI가 일정 기간 누적된 일기를 분석하여 사용자의 감정 흐름을 작성해줍니다. |
 
 ---
